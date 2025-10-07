@@ -72,20 +72,6 @@
               class="w-8 h-8 hover:opacity-80 transition"
             />
           </a>
-          <a href="#">
-            <img
-              :src="InstagramIcon"
-              alt="Instagram"
-              class="w-8 h-8 hover:opacity-80 transition"
-            />
-          </a>
-          <a href="#">
-            <img
-              :src="LinkedinIcon"
-              alt="LinkedIn"
-              class="w-8 h-8 hover:opacity-80 transition"
-            />
-          </a>
         </div>
       </div>
     </div>
@@ -95,16 +81,16 @@
       class="border-t border-gray-300 text-center py-5 text-base flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-6"
     >
       <div class="flex flex-col md:flex-row items-center gap-2">
-        <p class="font-semibold text-gray-900 ">©2025, CETMAR 41 -</p>
+        <p class="font-semibold text-gray-900">©2025, CETMAR 41 -</p>
         <p class="font-semibold text-gray-700">TODOS LOS DERECHOS RESERVADOS</p>
       </div>
 
       <div class="flex gap-6 mt-4 md:mt-0">
-        <a href="#" class="font-medium text-gray-700 hover:text-blue-600 hover:underline transition-colors duration-200">
+        <a
+          href="#"
+          class="font-medium text-gray-700 hover:text-blue-600 hover:underline transition-colors duration-200"
+        >
           Aviso de privacidad
-        </a>
-        <a href="#" class="font-medium text-gray-700 hover:text-blue-600 hover:underline transition-colors duration-200">
-          Términos de servicio
         </a>
       </div>
     </div>
