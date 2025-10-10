@@ -91,6 +91,7 @@
           <!-- Botón de regresar -->
           <button
             type="button"
+            @click="goHome"
             class="text-[#1226AB] text-lg font-bold underline hover:opacity-80 transition cursor-pointer"
           >
             Regresar al inicio
@@ -116,6 +117,13 @@ import BaseButton from "@/components/elements/BaseButton.vue";
 import EyeIcon from "@/assets/icons/Eye.svg";
 import InvisibleIcon from "@/assets/icons/Invisible.svg";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const goHome = () => {
+  router.push("/");
+};
 
 const password = ref("");
 const showPassword = ref(false);
