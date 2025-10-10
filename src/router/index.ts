@@ -3,6 +3,7 @@ import Dashboard from "@/modules/students/pages/Dashboard.vue";
 import Home from "@/modules/public/pages/Home.vue";
 import Login from "@/modules/public/pages/Login.vue";
 import About from "@/modules/public/pages/About.vue";
+import BoletaManagement from "../modules/school/pages/BoletaManagement.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: "/nosotros",
       name: "about",
       component: About,
+    },
+    {
+      path: "/boletas",
+      name: "tickets",
+      component: BoletaManagement,
     },
   ],
 });
