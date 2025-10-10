@@ -4,9 +4,9 @@
     @click="$emit('click')"
     :class="[
       // Clases base originales
-      'flex items-center justify-center px-3 py-3.5 gap-3 bg-[#1226AB] rounded-[12px] font-semibold text-white transition focus:outline-none hover:brightness-110 cursor-pointer',
+      'flex items-center justify-center gap-3 bg-[#1226AB] rounded-[12px] font-semibold text-white transition focus:outline-none hover:brightness-110 cursor-pointer',
       // Responsividad
-      'sm:px-4 sm:py-4 sm:text-lg md:px-5 md:py-4.5 md:text-xl',
+      'px-3 py-2 text-sm sm:px-4 sm:py-2.5 sm:text-base md:px-5 md:py-3 md:text-lg',
       customClass,
     ]"
   >
