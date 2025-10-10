@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-screen flex flex-col bg-gradient-to-b from-white to-gray-50 overflow-hidden"
-  >
+  <Navbar>
     <!-- BANNER -->
     <section
       class="relative w-full min-h-[85vh] flex flex-col md:flex-row items-center justify-between text-white overflow-hidden"
@@ -48,7 +46,7 @@
               Conoce más
             </a>
           </div>
-        </div>      
+        </div>
       </div>
     </section>
 
@@ -73,7 +71,7 @@
       </p>
     </section>
 
-    <!-- Placeholder pra el video -->
+    <!-- Placeholder para el video -->
     <section class="px-6 md:px-20 mb-20 flex justify-center animate-fade-in">
       <div
         class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-white"
@@ -141,12 +139,15 @@
       </div>
     </section>
 
+    <!-- Footer -->
     <Footer />
-  </div>
+  </Navbar>
 </template>
 
 <script setup>
+import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
+
 function scrollToMision() {
   const misionSection = document.getElementById("mision");
   if (misionSection) {
