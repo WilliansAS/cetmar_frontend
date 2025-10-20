@@ -4,6 +4,7 @@ import Home from "@/modules/public/pages/Home.vue";
 import Login from "@/modules/public/pages/Login.vue";
 import About from "@/modules/public/pages/About.vue";
 import BoletaManagement from "../modules/school/pages/BoletaManagement.vue";
+import Test from "../modules/school/pages/Test.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: "/boletas",
       name: "tickets",
       component: BoletaManagement,
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: Test,
     },
   ],
 });
