@@ -9,11 +9,8 @@
         'px-3 py-2 text-base sm:px-4 sm:py-3 sm:text-lg',
         'focus:ring-2 focus:ring-[#1226AB] focus:border-transparent',
         'bg-white cursor-pointer',
-        selectClass, 
-        error ? 'border-red-500 focus:ring-red-500' : '',
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
+        selectClass
       ]"
-      :disabled="disabled"
     >
       <option 
         v-if="placeholder" 
@@ -27,7 +24,6 @@
         v-for="option in options"
         :key="option.value"
         :value="option.value"
-        :disabled="option.disabled"
       >
         {{ option.label }}
       </option>
@@ -56,8 +52,6 @@ const props = defineProps({
     type: Array, 
     default: () => [] 
   },
-  error: { type: String, default: "" },
-  disabled: { type: Boolean, default: false },
   selectClass: { type: String, default: "" },
 });
 
