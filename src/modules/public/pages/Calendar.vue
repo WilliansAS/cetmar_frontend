@@ -55,26 +55,26 @@
           </p>
         </div>
 
-        <!-- ANUNCIOS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Announcement
-            v-for="(item, index) in visibleAnnouncements"
-            :key="index"
-            :title="item.title"
-            :content="item.content"
-            :date="item.date"
-          />
-        </div>
+        <!-- ANUNCIOS  -->
+        <Announcement 
+          ref="announcementComponent"
+          @toggle-state="handleToggleState"
+        />
 
-        <!-- BOTÓN -->
+        <!-- BOTÓN DINÁMICO -->
         <div class="text-center mt-12">
           <button
-            v-if="!showAll"
-            @click="showAll = true"
-            class="bg-gradient-to-r from-[#4880FF] to-[#00A896] text-white font-semibold py-3 px-8 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-base md:text-lg"
+            @click="$refs.announcementComponent.toggleShowAll()"
+            class="bg-gradient-to-r from-[#4880FF] to-[#00A896] text-white font-semibold py-3 px-8 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-base md:text-lg flex items-center justify-center mx-auto"
           >
-            Cargar más avisos
-            <svg class="w-4 h-4 inline-block ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {{ showAllState ? 'Ver menos avisos' : 'Cargar más avisos' }}
+            <svg 
+              class="w-4 h-4 ml-2 transition-transform duration-300" 
+              :class="{ 'rotate-180': showAllState }"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </button>
@@ -110,7 +110,6 @@
             class="w-full h-auto object-cover"
           />
         </div>
-
       </div>
     </section>
 
@@ -121,53 +120,15 @@
 <script setup>
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
-import Announcement from "@/components/elements/Announcement.vue";
-import { ref, computed } from "vue";
+import Announcement from "@/modules/public/components/Announcement.vue";
+import { ref } from "vue";
 
-const showAll = ref(false);
+const announcementComponent = ref(null);
+const showAllState = ref(false);
 
-const announcements = [
-  {
-    title: "Boletas del Primer Parcial Disponibles",
-    content:
-      "Las boletas de calificaciones del primer parcial ya se encuentran disponibles en el sistema escolar. Los estudiantes pueden revisarlas en su portal institucional.",
-    date: "22 de Agosto de 2025",
-  },
-  {
-    title: "Inscripciones de Nuevo Ingreso",
-    content:
-      "Las inscripciones de los estudiantes de nuevo ingreso se llevarán a cabo del 20 al 23 de marzo de 2025.",
-    date: "22 de Agosto de 2025",
-  },
-  {
-    title: "Entrega de Documentación",
-    content:
-      "Se recuerda a todos los alumnos entregar su documentación completa antes del cierre del ciclo escolar.",
-    date: "15 de Julio de 2025",
-  },
-  {
-    title: "Inicio del Segundo Parcial",
-    content:
-      "El segundo parcial iniciará el próximo lunes. Revisa tus horarios actualizados en la plataforma.",
-    date: "10 de Septiembre de 2025",
-  },
-  {
-    title: "Evaluaciones Complementarias",
-    content:
-      "Los alumnos que tengan pendientes evaluaciones complementarias podrán realizarlas la próxima semana.",
-    date: "2 de Octubre de 2025",
-  },
-  {
-    title: "Convocatoria a Actividades Culturales",
-    content:
-      "Participa en las actividades culturales y deportivas de CETMAR 41. Las inscripciones están abiertas.",
-    date: "28 de Octubre de 2025",
-  },
-];
-
-const visibleAnnouncements = computed(() =>
-  showAll.value ? announcements : announcements.slice(0, 3)
-);
+const handleToggleState = (newState) => {
+  showAllState.value = newState;
+};
 </script>
 
 <style scoped>
