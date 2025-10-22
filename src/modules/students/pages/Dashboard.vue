@@ -59,7 +59,7 @@
 
         <section class="mb-8">
           <h2 class="text-2xl font-bold mb-6">Evaluaciones recientes y Consulta de Boletas</h2>
-          <GradesTable />
+          <BaseTable :columns="gradeColumns" :data="gradeData" />
           <div class="mt-8">
             <h2 class="text-2xl font-bold mb-6">Descarga de Boletas</h2>
             <div class="bg-blue-100 rounded-lg px-6 py-4 flex items-center mb-6">
@@ -94,15 +94,38 @@
 </template>
 
 <script>
-import GradesTable from '../components/GradesTable.vue';
 import Sidebar from '@/components/layouts/Sidebar.vue';
+import BaseTable from '@/components/elements/BaseTable.vue';
+
+const gradeColumns = [
+  { label: 'Materia', field: 'materia' },
+  { label: '1º Parcial', field: 'parcial1' },
+  { label: '2º Parcial', field: 'parcial2' },
+  { label: '3º Parcial', field: 'parcial3' },
+  { label: 'Promedio', field: 'promedio' },
+  { label: 'Estado', field: 'estado', className: (row) => row.estado === 'Aprobado' ? 'text-green-500 font-medium' : 'text-red-500 font-medium' },
+];
+
+const gradeData = [
+  { materia: 'Materia 1', parcial1: 9.2, parcial2: 9.2, parcial3: 9.2, promedio: 9.2, estado: 'Aprobado' },
+  { materia: 'Materia 2', parcial1: 9.2, parcial2: 9.2, parcial3: 9.2, promedio: 9.2, estado: 'Aprobado' },
+  { materia: 'Materia 3', parcial1: 9.2, parcial2: 9.2, parcial3: 9.2, promedio: 9.2, estado: 'Aprobado' },
+  { materia: 'Materia 4', parcial1: 9.2, parcial2: 9.2, parcial3: 9.2, promedio: 9.2, estado: 'Aprobado' },
+  { materia: 'Materia 5', parcial1: 9.2, parcial2: 9.2, parcial3: 9.2, promedio: 9.2, estado: 'Aprobado' },
+];
 
 export default {
   name: 'Dashboard',
   components: {
-    GradesTable,
-    Sidebar
+    Sidebar,
+    BaseTable
   },
+  data() {
+    return {
+      gradeColumns,
+      gradeData
+    };
+  }
 }
 </script>
 

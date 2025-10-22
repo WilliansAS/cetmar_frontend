@@ -5,6 +5,7 @@ import Login from "@/modules/public/pages/Login.vue";
 import About from "@/modules/public/pages/About.vue";
 import BoletaManagement from "../modules/school/pages/BoletaManagement.vue";
 import Test from "../modules/school/pages/Test.vue";
+import EspecialidadDetalle from "../modules/public/pages/EspecialidadDetalle.vue";
 import Calendar from "../modules/public/pages/Calendar.vue";
 
 const router = createRouter({
@@ -14,6 +15,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: Home,
+    },
+    {
+      path: "/especialidad/:id",
+      name: "especialidad",
+      component: EspecialidadDetalle,
     },
     {
       path: "/login",
