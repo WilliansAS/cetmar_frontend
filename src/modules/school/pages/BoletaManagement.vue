@@ -1,5 +1,5 @@
 <template>
-  <StudentLayout>
+  <SchoolLayout>
     <h1 class="text-2xl font-bold mb-4">Subir Boleta</h1>
 
     <!-- Subir archivo -->
@@ -31,7 +31,7 @@
         class="mt-4"
       />
     </div>
-  </StudentLayout>
+  </SchoolLayout>
 </template>
 
 <script setup lang="ts">
@@ -39,7 +39,7 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useBoletaStore } from "../school.store";
 import BaseTable from "../../../components/elements/BaseTable.vue";
-import StudentLayout from "../components/SchoolLayout.vue";
+import SchoolLayout from "../components/SchoolLayout.vue";
 
 const boletaStore = useBoletaStore();
 const file = ref<File | null>(null);
