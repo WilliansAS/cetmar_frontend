@@ -15,7 +15,7 @@
       v-if="icon"
       :src="icon"
       alt="icono"
-      class="w-6 h-6 sm:w-8 sm:h-8 object-contain"
+      class="w-4 h-4 sm:w-6 sm:h-6 object-contain"
     />
 
     <!-- Texto del botón -->
