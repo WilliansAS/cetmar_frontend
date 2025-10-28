@@ -1,22 +1,18 @@
 <template>
-  <div class="relative w-full">
+  <div class="relative inline-block">
     <select
       :id="id"
       :value="modelValue"
       @change="handleChange"
       :class="[
-        'border border-gray-300 rounded-lg outline-none transition w-full appearance-none',
-        'px-3 py-2 text-base sm:px-4 sm:py-3 sm:text-lg',
+        'border border-[#B5ADAD] rounded-lg outline-none transition appearance-none',
+        'pl-3 pr-15 py-2.5 text-base',
         'focus:ring-2 focus:ring-[#1226AB] focus:border-transparent',
         'bg-white cursor-pointer',
-        selectClass
+        selectClass,
       ]"
     >
-      <option 
-        v-if="placeholder" 
-        value="" 
-        disabled
-      >
+      <option v-if="placeholder" value="" disabled>
         {{ placeholder }}
       </option>
 
@@ -29,37 +25,33 @@
       </option>
     </select>
 
-    <!-- Ícono de flecha -->
-    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-      <svg 
-        class="w-5 h-5 text-gray-400" 
-        fill="none" 
-        stroke="currentColor" 
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-      </svg>
+    <div
+      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+    >
+      <img :src="ExpandIcon" alt="desplegar" class="w-4 h-4 text-gray-400" />
     </div>
   </div>
 </template>
 
 <script setup>
+import ExpandIcon from "@/assets/icons/Expand.svg";
+
 const props = defineProps({
   id: { type: String, required: true },
   placeholder: { type: String, default: "Selecciona una opción" },
   modelValue: { type: [String, Number], default: "" },
-  options: { 
-    type: Array, 
-    default: () => [] 
+  options: {
+    type: Array,
+    default: () => [],
   },
   selectClass: { type: String, default: "" },
 });
 
-const emit = defineEmits(['update:modelValue', 'change']);
+const emit = defineEmits(["update:modelValue", "change"]);
 
 const handleChange = (event) => {
   const value = event.target.value;
-  emit('update:modelValue', value);
-  emit('change', value);
+  emit("update:modelValue", value);
+  emit("change", value);
 };
 </script>
