@@ -1,7 +1,6 @@
 import { apiRequest } from "../utils/httpClient";
 
 export interface Uac {
-  plantel: string;
   tipo_uac: string;
   clave_uac: string;
   semestre: number;
@@ -13,6 +12,7 @@ export interface Uac {
 }
 
 export interface BoletaData {
+  id: number;
   curp: string;
   alumno: string;
   numero_control: string;
@@ -22,7 +22,11 @@ export interface BoletaData {
   avance_opt: number;
   avance_total: number;
   promedio: number;
-  uac: Uac[];
+  items: Uac[];
+  identity_id: number;
+  src_sha256: string;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
@@ -33,7 +37,7 @@ export async function subirBoletaService(file: File): Promise<BoletaData> {
   const formData = new FormData();
   formData.append("file", file);
 
-  return await apiRequest<BoletaData>("/report_card/parse", {
+  return await apiRequest<BoletaData>("/report_card/parse_many", {
     method: "POST",
     data: formData,
     headers: {
