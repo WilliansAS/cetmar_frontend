@@ -14,6 +14,7 @@
     </div>
 
     <div
+      v-if="iconSrc"
       class="w-14 h-14 flex items-center justify-center rounded-[23px] flex-shrink-0 ml-4"
       :class="iconBgClass"
     >
@@ -28,10 +29,9 @@ import { useSlots } from "vue";
 defineProps<{
   title?: string;
   value?: string;
-  iconSrc: string;
+  iconSrc?: string;
   iconBgClass?: string;
 }>();
 
-// Necesitamos 'useSlots' para comprobar si el slot 'default' fue pasado
 const $slots = useSlots();
 </script>

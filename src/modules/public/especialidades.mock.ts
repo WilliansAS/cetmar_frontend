@@ -88,4 +88,92 @@ export const especialidades = [
     },
   },
   // AGREGAR MÁS ESPECIALIDADES AQUÍ CAMBIANDO LOS TEXTOS E IMÁGENES
+  {
+    id: 'laboratorio-ambiental',
+    colores: {
+      primario: '#1560c1',
+      primarioTailwind: 'bg-blue-700',
+      textoHero: 'text-white',
+      fondoHero: 'bg-blue-700',
+      fondoCard: 'bg-blue-700',
+      textoCard: 'text-white',
+      fondoFooter: 'bg-blue-700',
+      textoFooter: 'text-white',
+    },
+    hero: {
+      titulo: 'Laboratorio Ambiental',
+      descripcion: 'Formamos técnicos expertos en el análisis de muestras ambientales, capaces de operar equipos de laboratorio, realizar mediciones precisas y apoyar en el diagnóstico y monitoreo de la calidad del agua, aire y suelo.',
+      imagen: '/images/LaboratorioAmbiental-hero.png',
+    },
+    intro: {
+      titulo: 'Aprende de <span class="text-green-500">Análisis y Preservación Ambiental</span>',
+      descripcion: '¿Eres meticuloso y te preocupa el planeta? Esta carrera te enseña las habilidades prácticas para operar equipos de laboratorio y realizar muestreos en campo. Serás capaz de generar datos confiables que son la base para la protección y remediación de los ecosistemas.',
+      imagen: '/images/AprendeDatosEspaciales.png',
+    },
+    actividades: [
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/DesarrolloActividadesSaludables1.png',
+      },
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/DesarrolloActividadesSaludables2.png',
+      },
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/DesarrolloActividadesSaludables3.png',
+      },
+    ],
+    footer: {
+      texto: 'Tu Carrera por un <span class="text-green-600 font-semibold">Futuro Sostenible</span>',
+      descripcion: 'Si tienes una mentalidad analítica y la pasión por cuidar el medio ambiente, este es tu espacio. Aquí no solo aprenderás ciencia; desarrollarás una profesión con un impacto real y tangible. Únete a la nueva generación de técnicos ambientales. Únete a la nueva generación de técnicos ambientales.',
+    },
+  },
+  {
+    id: 'organizacion-geografica',
+    colores: {
+      primario: '#1ecbe1',
+      primarioTailwind: 'bg-cyan-400',
+      textoHero: 'text-white',
+      fondoHero: 'bg-cyan-400',
+      fondoCard: 'bg-cyan-400',
+      textoCard: 'text-white',
+      fondoFooter: 'bg-cyan-400',
+      textoFooter: 'text-white',
+    },
+    hero: {
+      titulo: 'Sistemas de Organización Geográfica',
+      descripcion: 'Adquiere las competencias para capturar, procesar y analizar datos con componente territorial, generando mapas y reportes estratégicos para sectores como transporte, turismo inteligente y gestión de riesgos.',
+      imagen: '/images/OrganizacionGeografica-hero.png',
+    },
+    intro: {
+      titulo: 'Aprende de <span class="text-blue-500">Servicio de<br>excelencia</span>',
+      descripcion: 'Si tu vocación es servir y hacer que cada persona se sienta bienvenida, esta es tu especialidad. Aprenderás todo sobre gestión hotelera, atención al cliente, organización de eventos y administración de recursos para que los huéspedes vivan una experiencia inolvidable. Prepárate para un gran futuro en el sector turístico y hotelero.',
+      imagen: '/images/ServiciosHospedaje-intro.png',
+    },
+    actividades: [
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/ServiciosHospedajeActividad1.png',
+      },
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/ServiciosHospedajeActividad2.png',
+      },
+      {
+        titulo: 'Desarrollo de actividades',
+        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
+        imagen: '/images/ServiciosHospedajeActividad3.png',
+      },
+    ],
+    footer: {
+      texto: 'Tu futuro profesional está en uno de los sectores con <span class="text-cyan-500 font-semibold">mayor crecimiento</span>',
+      descripcion: 'Más que una carrera, es el inicio de tu viaje en el mundo del turismo de hospitalidad. Aquí los estudiantes adquieren habilidades de liderazgo, atención al cliente y cultura de servicio para destacar en el sector hotelero, turístico y de eventos. ¡Sé parte de la nueva generación de profesionales en servicios de hospedaje!',
+    },
+  },
 ];
