@@ -1,67 +1,86 @@
 <template>
-  <StudentLayout>
-    <h1 class="text-2xl font-bold mb-4">Subir Boleta</h1>
+  <SchoolLayout>
+    <h1 class="text-4xl font-bold">Boletas</h1>
+    <p class="text-sm font-semibold text-gray-500 mb-6">
+      Gestión de boletas de estudiantes
+    </p>
 
-    <!-- Subir archivo -->
-    <div class="mb-4">
-      <input type="file" @change="onFileChange" accept=".pdf,.xlsx,.csv" />
-      <button
-        class="bg-blue-600 text-white px-4 py-2 rounded ml-2"
-        @click="uploadBoleta"
-      >
-        {{ loading ? "Procesando..." : "Subir" }}
-      </button>
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-2xl font-semibold">Boletas</h2>
+
+        <BaseButton
+          text="Subir boleta"
+          :icon="PlusIcon"
+          customClass="!text-sm py-2 !px-4"
+          @click="uploadBoleta"
+        />
+        <input
+          type="file"
+          @change="onFileChange"
+          accept=".pdf,.xlsx,.csv"
+          class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+      </div>
+
+      <hr class="border-gray-200" />
+
+      <div class="py-4">
+        <p class="text-sm font-medium text-gray-700 mb-3">Filtros:</p>
+        <BoletaFilters />
+      </div>
+
+      <!-- Tabla de resultados -->
+      <div v-if="boletaData" class="overflow-x-auto">
+        <BaseTable
+          :columns="columns"
+          :data="formattedBoletaData"
+          :pagination="true"
+          class="mt-4"
+        />
+      </div>
     </div>
-
-    <!-- Error -->
-    <div v-if="error" class="text-red-600 font-semibold mb-3">
-      {{ error }}
-    </div>
-
-    <!-- Tabla de resultados -->
-    <div v-if="boletaData" class="overflow-x-auto">
-      <h2 class="text-xl font-semibold mb-2">
-        Datos del alumno: {{ boletaData.alumno }}
-      </h2>
-
-      <BaseTable
-        :columns="columns"
-        :data="boletaData.uac"
-        :pagination="true"
-        class="mt-4"
-      />
-    </div>
-  </StudentLayout>
+  </SchoolLayout>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useBoletaStore } from "../school.store";
-import BaseTable from "../../../components/elements/BaseTable.vue";
-import StudentLayout from "../components/SchoolLayout.vue";
+import BaseTable from "@/components/elements/BaseTable.vue";
+import SchoolLayout from "../components/SchoolLayout.vue";
+import BaseButton from "@/components/elements/BaseButton.vue";
+import PlusIcon from "@/assets/icons/Plus.svg";
+import BoletaFilters from "../components/BoletaFilters.vue";
 
 const boletaStore = useBoletaStore();
 const file = ref<File | null>(null);
 
 const columns = [
-  { label: "Plantel", field: "plantel" },
-  { label: "Tipo UAC", field: "tipo_uac" },
-  { label: "Clave UAC", field: "clave_uac" },
-  { label: "Semestre", field: "semestre" },
-  { label: "Nombre", field: "nombre" },
-  { label: "Calificación", field: "calif" },
-  { label: "Horas", field: "horas_sem" },
-  { label: "Créditos", field: "creditos" },
-  { label: "Periodo", field: "periodo" },
+  { label: "Alumno", field: "alumno" },
+  { label: "CURP", field: "curp" },
+  { label: "No. Control", field: "numero_control" },
+  { label: "Plan de Estudios", field: "plan_estudios" },
+  { label: "Carrera", field: "carrera" },
+  { label: "Promedio", field: "promedio" },
 ];
 
 const onFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
     file.value = target.files[0]!;
+    if (error.value) {
+      error.value = null; // Limpiar error si se selecciona nuevo archivo
+    }
   }
 };
+
+const formattedBoletaData = computed(() => {
+  return boletaData.value.map((boleta) => ({
+    ...boleta,
+    alumno: boleta.alumno.split(" Modalidad educativa:")[0],
+  }));
+});
 
 const uploadBoleta = async () => {
   if (!file.value) return alert("Por favor selecciona un archivo");

@@ -22,7 +22,7 @@ const navigationMenu = ref<NavItem[]>([
   {
     label: "Inicio",
     iconSrc: HomeIcon,
-    route: "/",
+    route: "/dashboard/school",
   },
   {
     label: "Boletas",
@@ -53,7 +53,7 @@ const navigationMenu = ref<NavItem[]>([
   {
     label: "Estudiantes",
     iconSrc: UserIcon,
-    route: "/test",
+    route: "/school/studentManagement",
   },
 ]);
 </script>

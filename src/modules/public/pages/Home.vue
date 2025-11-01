@@ -69,61 +69,24 @@
             CARRERAS TÉCNICAS
           </span>
         </div>
+        <!-- Cards de especialidades -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 md:px-0">
-          <!-- Cards de ejemplo -->
           <div
-            class="rounded-2xl shadow-xl flex flex-col items-stretch min-h-[370px] bg-[#1e8fff]"
+            v-for="esp in especialidades"
+            :key="esp.id"
+            class="rounded-2xl shadow-xl flex flex-col items-stretch min-h-[370px] cursor-pointer transition-transform hover:scale-105"
+            :class="esp.colores.fondoCard"
+            @click="goToEspecialidad(esp.id)"
           >
             <div
-              class="text-white font-bold text-lg text-left px-6 pt-6 pb-0 leading-tight"
+              class="font-bold text-lg text-left px-6 pt-6 pb-0 leading-tight"
+              :class="esp.colores.textoCard"
             >
-              Servicios de hospedaje
+              {{ esp.hero.titulo }}
             </div>
             <img
-              src="/images/ServiciosHospedajeHome.svg"
-              alt="Servicios de hospedaje"
-              class="w-full h-[300px] object-contain mt-0"
-            />
-          </div>
-          <div
-            class="rounded-2xl shadow-xl flex flex-col items-stretch min-h-[370px] bg-white"
-          >
-            <div
-              class="text-gray-800 font-bold text-lg text-left px-6 pt-6 pb-0 leading-tight"
-            >
-              Laboratorio ambiental
-            </div>
-            <img
-              src="/images/LaboratorioAmbientalHome.svg"
-              alt="Laboratorio ambiental"
-              class="w-full h-[300px] object-contain mt-0"
-            />
-          </div>
-          <div
-            class="rounded-2xl shadow-xl flex flex-col items-stretch min-h-[370px] bg-[#1e8fff]"
-          >
-            <div
-              class="text-white font-bold text-lg text-left px-6 pt-6 pb-0 leading-tight"
-            >
-              Sistemas de Información Geográfica
-            </div>
-            <img
-              src="/images/InformacionGeograficaHome.svg"
-              alt="Sistemas de Información Geográfica"
-              class="w-full h-[300px] object-contain mt-0"
-            />
-          </div>
-          <div
-            class="rounded-2xl shadow-xl flex flex-col items-stretch min-h-[370px] bg-white"
-          >
-            <div
-              class="text-gray-800 font-bold text-lg text-left px-6 pt-6 pb-0 leading-tight"
-            >
-              Vida Saludable
-            </div>
-            <img
-              src="/images/VidaSaludableHome.svg"
-              alt="Vida Saludable"
+              :src="esp.hero.imagen"
+              :alt="esp.hero.titulo"
               class="w-full h-[300px] object-contain mt-0"
             />
           </div>
@@ -207,4 +170,12 @@
 <script setup>
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "../../../components/layouts/Footer.vue";
+
+import { useRouter } from 'vue-router';
+import { especialidades } from '../especialidades.mock';
+
+const router = useRouter();
+function goToEspecialidad(id) {
+  router.push(`/especialidad/${id}`);
+}
 </script>
