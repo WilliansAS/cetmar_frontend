@@ -9,6 +9,7 @@ import EspecialidadDetalle from "../modules/public/pages/EspecialidadDetalle.vue
 import Calendar from "../modules/public/pages/Calendar.vue";
 import DashboardSchool from "../modules/school/pages/DashboardSchool.vue";
 import StudentManagement from "@/modules/school/pages/StudentManagement.vue";
+import DashboardDirector from "@/modules/director/pages/DashboardDirector.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: "/school/studentManagement",
       name: "student-management",
       component: StudentManagement,
+    },
+    {
+      path: "/dashboard/director",
+      name: "director-dashboard",
+      component: DashboardDirector, 
     }
   ],
 });
