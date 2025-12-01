@@ -60,9 +60,8 @@ const columns = [
   { label: "Alumno", field: "alumno" },
   { label: "CURP", field: "curp" },
   { label: "No. Control", field: "numero_control" },
-  { label: "Plan de Estudios", field: "plan_estudios" },
-  { label: "Carrera", field: "carrera" },
-  { label: "Promedio", field: "promedio" },
+  { label: "Fecha Subida", field: "created_at" },
+  { label: "Semestre", field: "semestre" },
 ];
 
 const onFileChange = (e: Event) => {
@@ -76,9 +75,13 @@ const onFileChange = (e: Event) => {
 };
 
 const formattedBoletaData = computed(() => {
+  if (!boletaData.value) return [];
+
   return boletaData.value.map((boleta) => ({
-    ...boleta,
-    alumno: boleta.alumno.split(" Modalidad educativa:")[0],
+    alumno: boleta.alumno,
+    numero_control: boleta.numero_control,
+    created_at: new Date(boleta.created_at).toLocaleDateString("es-MX"),
+    semestre: boleta.items[0]?.semestre ?? "—",
   }));
 });
 

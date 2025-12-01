@@ -3,7 +3,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <StatsCard
         title="Estudiantes"
-        value="40,689"
+        :value="totalStudentsComputed"
         :iconSrc="UserGroup"
         iconBgClass="bg-purple-100"
       />
@@ -42,4 +42,19 @@ import StatsCard from "../../../components/elements/StatsCard.vue";
 import UserGroup from "@/assets/icons/Group-Purple.svg";
 import Block from "@/assets/icons/Block.svg";
 import Decline from "@/assets/icons/Decline.svg";
+
+import { useUsersStore } from "@/store/user.store";
+import { onMounted, computed } from "vue";
+
+const userStore = useUsersStore();
+
+// Cargar el conteo cuando el componente se monte
+onMounted(() => {
+  userStore.fetchUsersCount();
+});
+
+// Computed para leer el valor directo del store
+const totalStudentsComputed = computed(() =>
+  userStore.totalUsers.toLocaleString()
+);
 </script>
