@@ -34,13 +34,14 @@
         </div>
 
         <!-- Formulario -->
-        <form class="flex flex-col gap-7 w-full">
+        <form class="flex flex-col gap-7 w-full" @submit.prevent="handleLogin">
           <div class="flex flex-col text-left">
             <BaseInput
               id="email"
               label="Correo electrónico"
               type="email"
               placeholder="ejemplo@correo.com"
+              v-model="identifier"
             />
           </div>
 
@@ -85,8 +86,17 @@
             </div>
           </div>
 
+          <!-- Mostrar error si existe -->
+          <p v-if="auth.error" class="text-red-600 font-semibold text-center">
+            {{ auth.error }}
+          </p>
+
           <!-- Botón principal -->
-          <BaseButton text="Iniciar sesión" customClass="text-lg rounded-lg" />
+          <BaseButton
+            text="Iniciar sesión"
+            customClass="text-lg rounded-lg"
+            type="submit"
+          />
 
           <!-- Botón de regresar -->
           <button
@@ -118,17 +128,33 @@ import EyeIcon from "@/assets/icons/Eye.svg";
 import InvisibleIcon from "@/assets/icons/Invisible.svg";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/store/auth.store";
 
 const router = useRouter();
+const auth = useAuthStore();
 
 const goHome = () => {
   router.push("/");
 };
 
+// Campos del formulario
+const identifier = ref("");
 const password = ref("");
+
 const showPassword = ref(false);
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
+};
+
+const handleLogin = async () => {
+  const success = await auth.login({
+    identifier: identifier.value,
+    password: password.value,
+  });
+
+  if (success) {
+    router.push("/dashboard");
+  }
 };
 </script>
