@@ -13,13 +13,7 @@
           text="Subir boleta"
           :icon="PlusIcon"
           customClass="!text-sm py-2 !px-4"
-          @click="uploadBoleta"
-        />
-        <input
-          type="file"
-          @change="onFileChange"
-          accept=".pdf,.xlsx,.csv"
-          class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          @click="openUploadModal"
         />
       </div>
 
@@ -40,6 +34,11 @@
         />
       </div>
     </div>
+
+    <UploadBoletaModal
+      :show="isUploadModalOpen"
+      @close="isUploadModalOpen = false"
+    />
   </SchoolLayout>
 </template>
 
@@ -52,9 +51,11 @@ import SchoolLayout from "../components/SchoolLayout.vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
 import PlusIcon from "@/assets/icons/Plus.svg";
 import BoletaFilters from "../components/BoletaFilters.vue";
+import UploadBoletaModal from "../components/UploadBoletaModal.vue";
 
 const boletaStore = useBoletaStore();
-const file = ref<File | null>(null);
+// Estado para controlar el modal
+const isUploadModalOpen = ref(false);
 
 const columns = [
   { label: "Alumno", field: "alumno" },
@@ -64,20 +65,15 @@ const columns = [
   { label: "Semestre", field: "semestre" },
 ];
 
-const onFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    file.value = target.files[0]!;
-    if (error.value) {
-      error.value = null; // Limpiar error si se selecciona nuevo archivo
-    }
-  }
+// Función para abrir el modal
+const openUploadModal = () => {
+  isUploadModalOpen.value = true;
 };
 
 const formattedBoletaData = computed(() => {
   if (!boletaData.value) return [];
 
-  return boletaData.value.map((boleta) => ({
+  return boletaData.value.map((boleta: any) => ({
     alumno: boleta.alumno,
     numero_control: boleta.numero_control,
     created_at: new Date(boleta.created_at).toLocaleDateString("es-MX"),
@@ -85,11 +81,6 @@ const formattedBoletaData = computed(() => {
   }));
 });
 
-const uploadBoleta = async () => {
-  if (!file.value) return alert("Por favor selecciona un archivo");
-  await boletaStore.subirBoleta(file.value);
-};
-
 // Datos del store
-const { boletaData, loading, error } = storeToRefs(boletaStore);
+const { boletaData } = storeToRefs(boletaStore);
 </script>

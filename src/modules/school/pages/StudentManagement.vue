@@ -52,6 +52,13 @@
         :onDelete="onDelete"
       />
     </div>
+
+    <ConfirmDeleteModal
+      :show="showDeleteModal"
+      :element-name="studentToDelete?.nombre"
+      @close="closeDeleteModal"
+      @confirm="confirmDelete"
+    />
   </SchoolLayout>
 </template>
 
@@ -64,8 +71,13 @@ import BaseTable from "@/components/elements/BaseTable.vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
 import PlusIcon from "@/assets/icons/Plus.svg";
 import { useStudentsStore } from "@/store/student.store";
+import ConfirmDeleteModal from "@/components/elements/ConfirmDeleteModal.vue";
 
 const studentsStore = useStudentsStore();
+
+// ESTADO PARA LA ELIMINACIÓN
+const showDeleteModal = ref(false);
+const studentToDelete = ref<any>(null);
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -106,6 +118,7 @@ const filteredData = ref<any[]>([]);
 // Mapear datos del backend → tabla
 function updateTableData() {
   data.value = studentsStore.students.map((s) => ({
+    id: s.Id,
     nombre: s.User_Name,
     email: s.User_Email,
     matricula: s.Matricula,
@@ -133,6 +146,30 @@ function onEdit(row: any) {
 }
 
 function onDelete(row: any) {
-  console.log("Eliminar:", row);
+  studentToDelete.value = row;
+  showDeleteModal.value = true;
+}
+
+// 4. Función para cerrar el modal y limpiar selección
+function closeDeleteModal() {
+  showDeleteModal.value = false;
+  studentToDelete.value = null;
+}
+
+async function confirmDelete() {
+  if (!studentToDelete.value) return;
+
+  try {
+    console.log(
+      "Eliminando estudiante:",
+      studentToDelete.value.nombre,
+      "con ID:",
+      studentToDelete.value.id
+    );
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+  } finally {
+    closeDeleteModal();
+  }
 }
 </script>
