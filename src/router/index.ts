@@ -11,6 +11,9 @@ import DashboardSchool from "../modules/school/pages/DashboardSchool.vue";
 import StudentManagement from "@/modules/school/pages/StudentManagement.vue";
 import DashboardDirector from "@/modules/director/pages/DashboardDirector.vue";
 import DashboardLinking from "@/modules/linking/pages/DashboardLinking.vue";
+import DashboardAdmin from "@/modules/admin/pages/DashboardAdmin.vue";
+import UsersAdmin from "@/modules/admin/pages/UsersAdmin.vue";
+import RolesAdmin from "@/modules/admin/pages/RolesAdmin.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +77,22 @@ const router = createRouter({
       path: "/dashboard/vinculacion",
       name: "linking-dashboard",
       component: DashboardLinking,
+    }
+    ,
+    {
+      path: "/dashboard/admin",
+      name: "admin-dashboard",
+      component: DashboardAdmin,
+    },
+    {
+      path: "/dashboard/admin/users",
+      name: "admin-users",
+      component: UsersAdmin,
+    },
+    {
+      path: "/dashboard/admin/roles",
+      name: "admin-roles",
+      component: RolesAdmin,
     }
   ],
 });
