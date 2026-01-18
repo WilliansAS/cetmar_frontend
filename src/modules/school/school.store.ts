@@ -1,22 +1,22 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import type { BoletaData } from "../../api/boletas.api";
+import type { BoletaData } from "@/interfaces/IBoleta";
 import { subirBoletaService } from "../../api/boletas.api";
 
 export const useBoletaStore = defineStore("boleta", () => {
-  const boletaData = ref<BoletaData | null>(null);
+  const boletasData = ref<BoletaData[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
   // Acción para subir la boleta
-  const subirBoleta = async (file: File) => {
+  const subirBoleta = async (files: File[]) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await subirBoletaService(file);
+      const response = await subirBoletaService(files);
       console.log("Respuesta del servidor:", response);
-      boletaData.value = response;
+      boletasData.value = response;
     } catch (err) {
       console.error("Error al subir la boleta:", err);
       error.value = (err as Error).message;
@@ -26,7 +26,7 @@ export const useBoletaStore = defineStore("boleta", () => {
   };
 
   return {
-    boletaData,
+    boletasData,
     loading,
     error,
     subirBoleta,
