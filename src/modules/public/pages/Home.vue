@@ -1,79 +1,107 @@
 <template>
   <Navbar>
-    <!-- BANNER -->
-    <section class="w-full relative">
-      <div class="w-full h-[500px] md:h-[600px] relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80"
-          alt="CETMAR 41 Cancún"
-          class="w-full h-full object-cover scale-105"
-        />
+    <!-- BANNER CON CARRUSEL -->
+    <section
+      class="relative w-full min-h-[55vh] md:min-h-[75vh] flex items-center justify-center text-white overflow-hidden"
+    >
+      <!-- Slides -->
+      <div class="absolute inset-0 overflow-hidden">
         <div
-          class="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-gradient-to-t from-[#1436b0]/85 via-[#1436b0]/55 to-transparent"
+          class="flex h-full transition-transform duration-700 ease-in-out"
+          :style="{ transform: `translateX(-${bannerIndex * 100}%)` }"
         >
-          <div class="max-w-4xl w-full">
-            <h2
-              class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white mb-4 drop-shadow-lg tracking-tight"
-            >
-              CETMAR 41 CANCÚN
-            </h2>
-            <p
-              class="text-xl md:text-2xl font-light text-white/90 drop-shadow-md"
-            >
-              Formación técnica y profesional de calidad en Cancún.
-            </p>
+          <div
+            v-for="(img, i) in bannerImages"
+            :key="i"
+            class="min-w-full h-full relative"
+          >
+            <img
+              :src="img"
+              class="w-full h-full object-cover object-center"
+              alt="Banner CETMAR"
+            />
           </div>
         </div>
+
+        <!-- Overlays -->
+        <div class="absolute inset-0 bg-black/60"></div>
         <div
-          class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10"
+          class="absolute inset-0 bg-gradient-to-br from-[#1436b0]/70 via-[#1436b0]/40 to-transparent"
+        ></div>
+      </div>
+
+      <!-- Contenido -->
+      <div
+        class="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-8 md:px-16 animate-fade-in-up"
+      >
+        <h1
+          class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4 drop-shadow-xl"
         >
-          <button class="w-3 h-3 bg-white rounded-full"></button>
-          <button
-            class="w-3 h-3 bg-white/60 rounded-full hover:bg-white"
-          ></button>
-          <button
-            class="w-3 h-3 bg-white/60 rounded-full hover:bg-white"
-          ></button>
-        </div>
+          CETMAR 41 CANCÚN
+        </h1>
+        <p
+          class="text-base sm:text-lg md:text-2xl text-white/95 font-light leading-relaxed"
+        >
+          Formación técnica y profesional de calidad en Cancún.
+        </p>
+      </div>
+
+      <!-- Indicadores -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        <button
+          v-for="(_, i) in bannerImages"
+          :key="i"
+          @click="goToBanner(i)"
+          class="w-3 h-3 rounded-full transition-all"
+          :class="
+            bannerIndex === i
+              ? 'bg-white scale-125'
+              : 'bg-white/50 hover:bg-white'
+          "
+        ></button>
       </div>
     </section>
 
     <!-- ESPECIALIDADES -->
-    <section
-      class="w-full relative py-20 bg-gradient-to-b from-white to-slate-50"
-    >
-      <div class="absolute top-0 left-0 w-full h-20 bg-[#1436b0]/5"></div>
-      <div class="max-w-6xl mx-auto px-6 relative">
-        <h3 class="text-center text-4xl font-extrabold text-slate-900 mb-3">
+    <section class="py-20 bg-gradient-to-b from-white to-slate-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-3">
           Nuestra Oferta Educativa
-        </h3>
+        </h2>
         <p
           class="text-center text-sm font-semibold text-[#1436b0] uppercase tracking-widest mb-12"
         >
           Carreras Técnicas
         </p>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div
             v-for="esp in especialidades"
             :key="esp.id"
             @click="goToEspecialidad(esp.id)"
-            class="group relative h-96 flex flex-col justify-end rounded-2xl shadow-xl overflow-hidden cursor-pointer border border-slate-100 hover:shadow-2xl transition-all duration-500"
+            class="relative group aspect-[3/4] rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-all"
           >
             <img
               :src="esp.hero.imagen"
-              :alt="esp.hero.titulo"
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"
-            ></div>
-            <div class="relative z-10 p-6">
-              <h4
-                class="text-2xl font-bold text-white leading-tight drop-shadow-md"
-              >
+            <!-- Overlay de control -->
+            <div class="absolute inset-0 bg-blue-700/20"></div>
+
+            <!-- Fondo para el logo -->
+            <div class="absolute top-4 left-4 w-20 h-20 bg-white/60 rounded-lg backdrop-blur-sm"></div>
+
+            <!-- Logo de la carrera -->
+            <img
+              :src="esp.hero.logo"
+              class="absolute top-6 left-6 w-16 h-16 object-contain drop-shadow-lg z-10"
+            />
+
+            <div class="absolute bottom-0 p-6 z-10">
+              <h3 class="text-xl font-bold text-white">
                 {{ esp.hero.titulo }}
-              </h4>
-              <p class="text-white/80 text-sm mt-1">Conocer más</p>
+              </h3>
+              <span class="text-white/80 text-sm">Conocer más</span>
             </div>
           </div>
         </div>
@@ -81,81 +109,59 @@
     </section>
 
     <!-- NUESTRA INSTITUCIÓN -->
-    <section class="w-full bg-white py-15 md:py-18 relative overflow-hidden">
+    <section class="py-20 bg-white relative overflow-hidden">
       <div
         class="absolute inset-0 bg-gradient-to-br from-[#26E7C8]/10 via-transparent to-[#009BE5]/10"
       ></div>
 
-      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
-        <h3
-          class="text-center text-4xl md:text-5xl font-extrabold text-slate-900 mb-16"
-        >
+      <div class="relative max-w-7xl mx-auto px-6">
+        <h2 class="text-center text-3xl md:text-5xl font-extrabold mb-16">
           Nuestra Institución
-        </h3>
+        </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
-          <div>
+          <div class="animate-fade-in-up">
             <p
-              class="text-base md:text-lg font-semibold text-[#1436b0] uppercase tracking-widest mb-3"
+              class="text-sm font-semibold text-[#1436b0] uppercase tracking-widest mb-2"
             >
-              BIENVENIDOS AL
+              Bienvenidos al
             </p>
-            <h3
-              class="text-4xl md:text-5xl font-extrabold text-slate-900 mt-1 mb-5 leading-tight"
-            >
+            <h3 class="text-3xl md:text-4xl font-extrabold mb-5">
               Centro de Estudios Tecnológicos del Mar No. 41
             </h3>
             <p
-              class="text-lg text-slate-700 leading-relaxed mb-6 border-l-4 border-[#1436b0] pl-4"
+              class="text-base md:text-lg text-slate-700 border-l-4 border-[#1436b0] pl-4"
             >
-              En CETMAR 41 Cancún formamos jóvenes preparados para transformar
+              En CETMAR 41 Cancun formamos jóvenes preparados para transformar
               su futuro. Con educación técnica de calidad, práctica real y
               docentes comprometidos con el desarrollo profesional.
             </p>
           </div>
-          <div
-            class="relative w-full rounded-2xl shadow-2xl overflow-hidden border border-slate-100"
-          >
+
+          <div class="rounded-2xl overflow-hidden shadow-xl animate-fade-in">
             <img
               src="/images/NuestraInstitucionHome.svg"
-              alt="Portón CETMAR"
-              class="rounded-2xl w-full object-cover"
+              class="w-full h-full object-cover"
             />
-            <button
-              class="absolute inset-0 flex items-center justify-center group"
-              aria-label="Reproducir video"
-            >
-              <div
-                class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/90 shadow-2xl transition-all duration-300 group-hover:bg-white group-hover:scale-110 flex items-center justify-center"
-              >
-                <svg
-                  class="w-10 h-10 md:w-12 md:h-12 text-[#1436b0] ml-1"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <polygon points="10,8 16,12 10,16" fill="currentColor" />
-                </svg>
-              </div>
-            </button>
           </div>
         </div>
 
-        <!-- Bloque de características -->
-        <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+        <!-- CARACTERÍSTICAS -->
+        <div
+          class="mt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
+        >
           <div
             v-for="(item, i) in caracteristicas"
             :key="i"
-            class="bg-gradient-to-b from-white to-slate-50 rounded-2xl shadow-md p-10 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            class="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all"
           >
             <div
-              class="w-20 h-20 bg-[#1436b0]/10 text-[#1436b0] rounded-xl flex items-center justify-center mx-auto"
+              class="w-16 h-16 mx-auto bg-[#1436b0]/10 text-[#1436b0] rounded-xl flex items-center justify-center"
             >
-              <component :is="item.icon" class="w-10 h-10" />
+              <img :src="item.icon" class="w-8 h-8" />
             </div>
-            <h4 class="text-2xl font-bold text-slate-800 mt-5">
-              {{ item.titulo }}
-            </h4>
-            <p class="mt-3 text-base text-slate-600">
+            <h4 class="text-xl font-bold mt-4">{{ item.titulo }}</h4>
+            <p class="text-sm text-slate-600 mt-2">
               {{ item.descripcion }}
             </p>
           </div>
@@ -163,14 +169,14 @@
       </div>
     </section>
 
-    <!-- GALERÍA (CARRUSEL visible de varias imágenes) -->
-    <section class="w-full bg-slate-50 py-20 overflow-hidden">
+    <!-- GALERÍA -->
+    <section class="py-20 bg-slate-50">
       <div class="max-w-7xl mx-auto px-6">
-        <h3 class="text-4xl font-extrabold text-slate-900 mb-8 text-center">
+        <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-6">
           Conoce el Plantel
-        </h3>
-        <p class="text-center text-lg text-slate-600 mb-12">
-          Un vistazo a nuestras instalaciones y vida estudiantil.
+        </h2>
+        <p class="text-center text-slate-600 mb-12">
+          Un vistazo a nuestras instalaciones.
         </p>
 
         <div class="relative overflow-hidden">
@@ -181,28 +187,14 @@
             <div
               v-for="(img, index) in gallery"
               :key="index"
-              class="flex-shrink-0 w-1/3 px-3 box-border"
+              class="w-1/3 flex-shrink-0 px-3"
             >
               <img
                 :src="img"
-                class="w-full h-64 md:h-80 rounded-xl object-cover shadow-lg border border-slate-100"
-                :alt="`Imagen ${index + 1}`"
+                class="w-full h-56 sm:h-64 md:h-80 object-cover rounded-xl shadow-lg"
               />
             </div>
           </div>
-
-          <button
-            @click="prevSlide"
-            class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"
-          >
-            ‹
-          </button>
-          <button
-            @click="nextSlide"
-            class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"
-          >
-            ›
-          </button>
         </div>
       </div>
     </section>
@@ -214,38 +206,41 @@
 <script setup>
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
-import { useRouter } from "vue-router";
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 import { especialidades } from "../especialidades.mock";
+import IconInstalaciones from "@/assets/icons/Instalaciones.svg";
+import IconDocentes from "@/assets/icons/Docentes.svg";
+import IconVinculacion from "@/assets/icons/Vinculacion.svg";
 
 const router = useRouter();
-function goToEspecialidad(id) {
-  router.push(`/especialidad/${id}`);
-}
+const goToEspecialidad = (id) => router.push(`/especialidad/${id}`);
 
-// Características
-const caracteristicas = [
-  {
-    titulo: "Instalaciones de Vanguardia",
-    descripcion:
-      "Laboratorios y talleres equipados para una formación práctica y real.",
-    icon: "svg",
-  },
-  {
-    titulo: "Docentes Comprometidos",
-    descripcion:
-      "Profesionales dedicados a guiar y potenciar el talento de los alumnos.",
-    icon: "svg",
-  },
-  {
-    titulo: "Vinculación Estratégica",
-    descripcion:
-      "Conectamos a los estudiantes con el sector productivo para su éxito profesional.",
-    icon: "svg",
-  },
+/* ================= BANNER ================= */
+const bannerImages = [
+  "/images/Home1.webp",
+  "/images/Home2.webp",
+  "/images/Home3.webp",
 ];
 
-// Galería tipo carrusel (3 visibles)
+const bannerIndex = ref(0);
+let bannerInterval;
+
+const nextBanner = () => {
+  bannerIndex.value = (bannerIndex.value + 1) % bannerImages.length;
+};
+
+const resetBannerTimer = () => {
+  clearInterval(bannerInterval);
+  bannerInterval = setInterval(nextBanner, 6000);
+};
+
+const goToBanner = (i) => {
+  bannerIndex.value = i;
+  resetBannerTimer();
+};
+
+/* ================= GALERÍA ================= */
 const gallery = [
   "/images/HomeImg1.svg",
   "/images/HomeImg2.svg",
@@ -255,20 +250,78 @@ const gallery = [
   "/images/HomeImg3.svg",
 ];
 
+const VISIBLE_IMAGES = 3;
 const currentSlide = ref(0);
-let interval;
+let galleryInterval;
+
+const maxSlide = gallery.length - VISIBLE_IMAGES;
 
 const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % (gallery.length - 2);
-};
-
-const prevSlide = () => {
   currentSlide.value =
-    (currentSlide.value - 1 + (gallery.length - 2)) % (gallery.length - 2);
+    currentSlide.value >= maxSlide ? 0 : currentSlide.value + 1;
 };
 
 onMounted(() => {
-  interval = setInterval(nextSlide, 5000);
+  bannerInterval = setInterval(nextBanner, 6000);
+  galleryInterval = setInterval(nextSlide, 5000);
 });
-onUnmounted(() => clearInterval(interval));
+
+onUnmounted(() => {
+  clearInterval(bannerInterval);
+  clearInterval(galleryInterval);
+});
+
+/* ================= DATA ================= */
+const caracteristicas = [
+  {
+    titulo: "Instalaciones de Vanguardia",
+    descripcion:
+      "Laboratorios y talleres equipados para una formación práctica y real.",
+    icon: IconInstalaciones,
+  },
+  {
+    titulo: "Docentes Comprometidos",
+    descripcion:
+      "Profesionales dedicados a guiar y potenciar el talento de los alumnos.",
+    icon: IconDocentes,
+  },
+  {
+    titulo: "Vinculación Estratégica",
+    descripcion:
+      "Conectamos a los estudiantes con el sector productivo para su éxito profesional.",
+    icon: IconVinculacion,
+  },
+];
 </script>
+
+<style scoped>
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out both;
+}
+</style>
