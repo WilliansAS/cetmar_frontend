@@ -22,6 +22,7 @@ export const especialidades = [
       titulo: 'Aprende de <span class="text-green-500">Bienestar Integral<br></span> y <span class="text-green-500">Prevención</span>',
       descripcion: '¿Te apasiona el bienestar y ayudar a los demás a vivir mejor? En esta carrera desarrollarás las competencias para ser un agente de cambio. Aprenderás sobre nutrición básica, acondicionamiento físico y prevención de enfermedades, guiando a la sociedad hacia un estilo de vida más pleno, equilibrado y consciente.',
       imagen: '/images/AprendeDatosEspaciales.png',
+      logo: '/images/VidLogo.png',
     },
     actividades: [
          {
@@ -69,6 +70,7 @@ export const especialidades = [
       titulo: 'Aprende de <span class="text-blue-500">Servicio de<br>excelencia</span>',
       descripcion: 'Si tu vocación es servir y hacer que cada persona se sienta bienvenida, esta es tu especialidad. Aprenderás todo sobre gestión hotelera, atención al cliente, organización de eventos y administración de recursos para que los huéspedes vivan una experiencia inolvidable. Prepárate para un gran futuro en el sector turístico y hotelero.',
       imagen: '/images/ServiciosHospedaje-intro.png',
+      logo: '/images/SerLogo.png',
     },
     actividades: [
         {
@@ -112,6 +114,7 @@ export const especialidades = [
       titulo: 'Aprende de <span class="text-green-500">Análisis y Preservación Ambiental</span>',
       descripcion: '¿Eres meticuloso y te preocupa el planeta? Esta carrera te enseña las habilidades prácticas para operar equipos de laboratorio y realizar muestreos en campo. Serás capaz de generar datos confiables que son la base para la protección y remediación de los ecosistemas.',
       imagen: '/images/AprendeDatosEspaciales.png',
+      logo: '/images/LabLogo.png',
     },
     actividades: [
       {
@@ -158,6 +161,7 @@ export const especialidades = [
       titulo: 'Aprende del mundo a través de <span class="text-blue-500"> <br />Datos espaciales</span>',
       descripcion: 'Domina las herramientas tecnológicas que convierten la ubicación en el dato más poderoso. Aprenderás a capturar, analizar y visualizar información geográfica para resolver problemas complejos en urbanismo, medio ambiente y más, apoyando la toma de decisiones estratégicas.',
       imagen: '/images/ServiciosHospedaje-intro.png',
+      logo: '/images/SigLogo.png',
     },
     actividades: [
    

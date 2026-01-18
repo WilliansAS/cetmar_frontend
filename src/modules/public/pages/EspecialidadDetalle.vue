@@ -13,7 +13,7 @@
       <section class="py-16 md:py-20 px-6">
         <div class="max-w-5xl mx-auto">
           <IntroEspecialidad
-            :intro="especialidad?.intro ?? { titulo: '', descripcion: '', imagen: '' }"
+            :intro="especialidad?.intro ?? { titulo: '', descripcion: '', imagen: '', logo: '', }"
             :colores="especialidad?.colores"
           />
         </div>
