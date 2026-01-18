@@ -14,7 +14,8 @@ export const especialidades = [
     hero: {
       titulo: 'Vida Saludable',
       descripcion: 'Adquiere las competencias para capturar, procesar y analizar datos con componente territorial, generando mapas y reportes estratégicos para sectores como transporte, turismo inteligente y gestión de riesgos.',
-      imagen: '/images/VidaSaludable-hero.png',
+      imagen: '/images/VID.webp',
+      logo: '/images/VidLogo.png',
     },
     intro: {
       titulo: 'Aprende de <span class="text-green-500">El Mundo a Través<br>de Datos Espaciales</span>',
@@ -49,16 +50,18 @@ export const especialidades = [
       primario: '#1ecbe1',
       primarioTailwind: 'bg-cyan-400',
       textoHero: 'text-white',
-      fondoHero: 'bg-cyan-400',
-      fondoCard: 'bg-cyan-400',
+      fondoHero: 'bg-cyan-500',
+      fondoCard: 'bg-cyan-500',
       textoCard: 'text-white',
-      fondoFooter: 'bg-cyan-400',
+      fondoFooter: 'bg-cyan-500',
       textoFooter: 'text-white',
     },
     hero: {
       titulo: 'Servicios de hospedaje',
       descripcion: 'Formamos profesionales capaces de gestionar servicios de alojamiento, crear entornos de hospitalidad y brindar un mantenimiento de hospedaje de calidad a los huéspedes.',
-      imagen: '/images/ServiciosHospedaje-hero.png',
+      imagen: '/images/HOS.webp',
+      banner: '/images/HBanner.webp',
+      logo: '/images/SerLogo.png',
     },
     intro: {
       titulo: 'Aprende de <span class="text-blue-500">Servicio de<br>excelencia</span>',
@@ -66,20 +69,16 @@ export const especialidades = [
       imagen: '/images/ServiciosHospedaje-intro.png',
     },
     actividades: [
-      {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad1.png',
+        {
+        titulo: 'Visita guiada en el Centro de Convenciones de Cancún',
+        descripcion: 'Los alumnos técnicoss en Servicios de Hospedaje realizan una visita guiada en el Centro de Convenciones de Cancún. En esta actividad, los estudiantes aprenden sobre la gestión de eventos y atención al cliente en un entorno profesional.',
+        imagen: '/images/A1S.webp',
       },
+    
       {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad2.png',
-      },
-      {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad3.png',
+        titulo: 'Visita guiada en el Centro de Convenciones de Cancún',
+        descripcion:'Esta visita práctica permite a los estudiantes observar los protocolos de servicio y estándares de calidad que rigen a los líderes de la industria en Cancún. La actividad se centra en el comportamiento profesional y la etiqueta que un técnico en Hospedaje debe dominar para asegurar experiencias memorables en los huéspedes y asistentes a eventos masivos.',
+        imagen: '/images/S3A.webp',
       },
     ],
     footer: {
@@ -103,7 +102,8 @@ export const especialidades = [
     hero: {
       titulo: 'Laboratorio Ambiental',
       descripcion: 'Formamos técnicos expertos en el análisis de muestras ambientales, capaces de operar equipos de laboratorio, realizar mediciones precisas y apoyar en el diagnóstico y monitoreo de la calidad del agua, aire y suelo.',
-      imagen: '/images/LaboratorioAmbiental-hero.png',
+      imagen: '/images/Lab.webp',
+      logo: '/images/LabLogo.png',
     },
     intro: {
       titulo: 'Aprende de <span class="text-green-500">Análisis y Preservación Ambiental</span>',
@@ -138,42 +138,45 @@ export const especialidades = [
       primario: '#1ecbe1',
       primarioTailwind: 'bg-cyan-400',
       textoHero: 'text-white',
-      fondoHero: 'bg-cyan-400',
-      fondoCard: 'bg-cyan-400',
+      fondoHero: 'bg-cyan-500',
+      fondoCard: 'bg-cyan-500',
       textoCard: 'text-white',
-      fondoFooter: 'bg-cyan-400',
+      fondoFooter: 'bg-cyan-500',
       textoFooter: 'text-white',
     },
     hero: {
       titulo: 'Sistemas de Organización Geográfica',
       descripcion: 'Adquiere las competencias para capturar, procesar y analizar datos con componente territorial, generando mapas y reportes estratégicos para sectores como transporte, turismo inteligente y gestión de riesgos.',
-      imagen: '/images/OrganizacionGeografica-hero.png',
+      imagen: '/images/SIG.webp',
+      banner:'/images/SISBAN.webp',
+      logo: '/images/SigLogo.png',
     },
     intro: {
-      titulo: 'Aprende de <span class="text-blue-500">Servicio de<br>excelencia</span>',
-      descripcion: 'Si tu vocación es servir y hacer que cada persona se sienta bienvenida, esta es tu especialidad. Aprenderás todo sobre gestión hotelera, atención al cliente, organización de eventos y administración de recursos para que los huéspedes vivan una experiencia inolvidable. Prepárate para un gran futuro en el sector turístico y hotelero.',
+      titulo: 'Aprende del mundo a través de <span class="text-blue-500"> <br />Datos espaciales</span>',
+      descripcion: 'Domina las herramientas tecnológicas que convierten la ubicación en el dato más poderoso. Aprenderás a capturar, analizar y visualizar información geográfica para resolver problemas complejos en urbanismo, medio ambiente y más, apoyando la toma de decisiones estratégicas.',
       imagen: '/images/ServiciosHospedaje-intro.png',
     },
     actividades: [
+   
       {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad1.png',
+        titulo: 'Actividades con drones',
+        descripcion: 'Los alumnos de Sistemas de Información Geográfica realizan el uso y manejo adecuado del dron en la práctica del taller de aventura en Dron y tú comunidad desde el aire',
+        imagen: '/images/GA2.webp',
       },
-      {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad2.png',
+       {
+        titulo: 'Actividades con drones',
+        descripcion: 'Los alumnos de Sistemas de Información Geográfica realizan el uso y manejo adecuado del dron en la práctica del taller de aventura en Dron y tú comunidad con un visor de aventura',
+        imagen: '/images/GA4.webp',
       },
-      {
-        titulo: 'Desarrollo de actividades',
-        descripcion: 'Somos una institución comprometida con la formación integral de jóvenes, combinando teoría y práctica para preparar a nuestros estudiantes ante los retos del futuro.',
-        imagen: '/images/ServiciosHospedajeActividad3.png',
+       {
+        titulo: 'Actividades con drones',
+        descripcion:'Los alumnos de Sistemas de Información Geográfica realizan el uso y manejo adecuado del dron en el aula del taller de aventura en Dron y tú comunidad desde el aire',
+        imagen: '/images/GA3.webp',
       },
     ],
     footer: {
       texto: 'Tu futuro profesional está en uno de los sectores con <span class="text-cyan-500 font-semibold">mayor crecimiento</span>',
-      descripcion: 'Más que una carrera, es el inicio de tu viaje en el mundo del turismo de hospitalidad. Aquí los estudiantes adquieren habilidades de liderazgo, atención al cliente y cultura de servicio para destacar en el sector hotelero, turístico y de eventos. ¡Sé parte de la nueva generación de profesionales en servicios de hospedaje!',
+      descripcion: 'Si tienes una mentalidad analítica y la pasión por cuidar el medio ambiente, este es tu espacio. Aquí no solo aprenderás ciencia; desarrollarás una profesión con un impacto real y tangible. Únete a la nueva generación de técnicos ambientales. ',
     },
   },
 ];

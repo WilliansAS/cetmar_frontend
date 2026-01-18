@@ -1,22 +1,72 @@
 <template>
-  <section :class="['relative w-full overflow-hidden min-h-[320px] md:min-h-[340px] flex items-center py-10 px-4 md:px-12 rounded-b-2xl', colores?.fondoHero]">
-    <!-- Fondo diagonal -->
-    <div class="hidden md:block absolute inset-0 z-0" style="pointer-events:none;">
-      <svg width="100%" height="100%" viewBox="0 0 1200 340" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-        <polygon points="0,0 900,0 1200,340 0,340" :fill="colores?.primario || '#2563eb'" />
-      </svg>
+  <section
+    :class="[
+      'relative w-full flex items-center overflow-hidden',
+      'min-h-[55vh] md:min-h-[70vh]',
+      colores?.fondoHero || 'bg-blue-700'
+    ]"
+  >
+    <!-- Fondo -->
+    <div class="absolute inset-0">
+      <img
+        :src="hero.banner"
+        alt="Especialidad"
+        class="w-full h-full object-cover object-center"
+      />
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/70"
+      ></div>
     </div>
-    <div class="ml-12 flex-1 z-10 flex flex-col justify-center">
-      <h1 :class="[colores?.textoHero, 'text-4xl md:text-5xl font-bold mb-2 leading-tight']">{{ hero.titulo }}</h1>
-      <svg height="8" width="200" class="mb-6"><line x1="0" y1="6" x2="200" y2="6" style="stroke:#fff;stroke-width:5;stroke-linecap:round;filter: drop-shadow(0 1px 0 #fff);" /></svg>
-      <p :class="[colores?.textoHero, 'text-lg md:text-xl max-w-xl']">{{ hero.descripcion }}</p>
-    </div>
-    <div class="flex-1 flex justify-end z-10">
-      <img :src="hero.imagen" alt="Especialidad" class="max-h-64 md:max-h-80 mr-12 object-contain" />
+
+    <!-- Contenido -->
+    <div
+      class="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 md:px-16 w-full"
+    >
+      <div class="max-w-2xl text-center md:text-left animate-fade-in-up">
+        <h1
+          class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-xl"
+          :class="colores?.textoHero"
+        >
+          {{ hero.titulo }}
+        </h1>
+
+        <p
+          class="text-base sm:text-lg md:text-xl max-w-xl leading-relaxed opacity-95"
+          :class="colores?.textoHero"
+        >
+          {{ hero.descripcion }}
+        </p>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-defineProps<{ hero: { titulo: string; descripcion: string; imagen: string }; colores?: any }>()
+defineProps<{
+  hero: {
+    titulo: string
+    descripcion: string
+    banner?: string
+    imagen: string
+  }
+  colores?: any
+}>()
 </script>
+
+<style scoped>
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out both;
+}
+</style>
