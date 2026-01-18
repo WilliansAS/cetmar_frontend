@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 flex flex-col">
     <Navbar />
     <div class="flex-1">
-      <HeroEspecialidad :hero="especialidad?.hero ?? { titulo: '', descripcion: '', imagen: '' }"
+      <HeroEspecialidad :hero="especialidad?.hero ?? { titulo: '', descripcion: '', imagen: '', banner: '' }"
         :colores="especialidad?.colores" />
       <div>
         <div class="w-full flex justify-center">
