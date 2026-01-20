@@ -12,11 +12,13 @@
         <div class="text-2xl font-semibold">Todos los estudiantes</div>
         <div class="flex gap-3">
           <BaseButton
+            @click="downloadFormat"
             text="Formato"
             customClass="bg-green-500 hover:bg-green-600"
             icon="/images/ico-download.svg"
           />
           <BaseButton
+            @click="openAddModal"
             text="Nuevo estudiante"
             customClass="bg-blue-400 hover:bg-blue-500"
             :icon="PlusIcon"
@@ -53,12 +55,15 @@
       />
     </div>
 
+    <!--Modales-->
     <ConfirmDeleteModal
       :show="showDeleteModal"
       :element-name="studentToDelete?.nombre"
       @close="closeDeleteModal"
       @confirm="confirmDelete"
     />
+
+    <AddStudentModal :show="showAddModal" @close="closeAddModal" />
   </SchoolLayout>
 </template>
 
@@ -72,12 +77,15 @@ import BaseButton from "@/components/elements/BaseButton.vue";
 import PlusIcon from "@/assets/icons/Plus.svg";
 import { useStudentsStore } from "@/store/student.store";
 import ConfirmDeleteModal from "@/components/elements/ConfirmDeleteModal.vue";
+import AddStudentModal from "../components/AddStudentModal.vue";
 
 const studentsStore = useStudentsStore();
 
 // ESTADO PARA LA ELIMINACIÓN
 const showDeleteModal = ref(false);
 const studentToDelete = ref<any>(null);
+
+const showAddModal = ref(false);
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -104,7 +112,6 @@ async function onFileSelected(event: Event) {
 const columns = [
   { label: "Nombre", field: "nombre" },
   { label: "Correo", field: "email" },
-  { label: "Matrícula", field: "matricula" },
   { label: "No. Control", field: "numero_control" },
   { label: "CURP", field: "curp" },
   { label: "Carrera", field: "carrera" },
@@ -150,12 +157,40 @@ function onDelete(row: any) {
   showDeleteModal.value = true;
 }
 
-// 4. Función para cerrar el modal y limpiar selección
+// Función para cerrar el modal y limpiar selección
 function closeDeleteModal() {
   showDeleteModal.value = false;
   studentToDelete.value = null;
 }
 
+// Funciones para el modal de registro
+const openAddModal = () => {
+  showAddModal.value = true;
+};
+
+const closeAddModal = () => {
+  showAddModal.value = false;
+};
+
+// Descargar formato CSV
+const downloadFormat = (): void => {
+  const FILE_NAME: string = "Alta_Estudiantes.csv";
+  const FILE_PATH: string = `/formats/${FILE_NAME}`;
+
+  const anchor: HTMLAnchorElement = document.createElement("a");
+  anchor.href = FILE_PATH;
+
+  // Forzamos la descarga con el nombre original
+  anchor.setAttribute("download", FILE_NAME);
+
+  // Ejecución de la descarga
+  document.body.appendChild(anchor);
+  anchor.click();
+
+  document.body.removeChild(anchor);
+};
+
+// Eliminar estudiante
 async function confirmDelete() {
   if (!studentToDelete.value) return;
 
@@ -164,7 +199,7 @@ async function confirmDelete() {
       "Eliminando estudiante:",
       studentToDelete.value.nombre,
       "con ID:",
-      studentToDelete.value.id
+      studentToDelete.value.id,
     );
   } catch (error) {
     console.error("Error al eliminar:", error);

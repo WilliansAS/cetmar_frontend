@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useBoletaStore } from "../school.store";
+import { useBoletaStore } from "../../../store/school.store";
 import Upload from "@/assets/icons/Upload.svg";
 import BaseModal from "@/components/elements/BaseModal.vue";
 

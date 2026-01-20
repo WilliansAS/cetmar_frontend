@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
-import { useBoletaStore } from "../school.store";
+import { useBoletaStore } from "../../../store/school.store";
 import BaseTable from "@/components/elements/BaseTable.vue";
 import SchoolLayout from "../components/SchoolLayout.vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
