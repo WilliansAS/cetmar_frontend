@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>();
 
 const boletaStore = useBoletaStore();
-const file = ref<File | null>(null);
+const files = ref<File[]>([]);
 const fileInput = ref<HTMLInputElement | null>(null);
 const dragging = ref(false);
 
@@ -26,20 +26,28 @@ const triggerFileInput = () => {
 };
 
 // Manejar selección de archivo
-const onFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    file.value = target.files[0]!;
+const onFileChange = (e: Event | DragEvent) => {
+  let selectedFiles: FileList | null = null;
+
+  if (e instanceof DragEvent) {
+    selectedFiles = e.dataTransfer?.files || null;
+  } else {
+    selectedFiles = (e.target as HTMLInputElement).files;
+  }
+
+  if (selectedFiles) {
+    // Convertimos FileList a Array y lo acumulamos
+    files.value = [...files.value, ...Array.from(selectedFiles)];
   }
 };
 
 // Lógica de subida
 const handleUpload = async () => {
-  if (!file.value) return; // Validación básica
+  if (files.value.length === 0) return;
 
   try {
-    await boletaStore.subirBoleta(file.value);
-    file.value = null;
+    await boletaStore.subirBoleta(files.value);
+    files.value = [];
     emit("success");
     emit("close");
   } catch (error) {
@@ -49,8 +57,12 @@ const handleUpload = async () => {
 
 // Cerrar modal y limpiar
 const handleClose = () => {
-  file.value = null;
+  files.value = [];
   emit("close");
+};
+
+const removeFile = (index: number) => {
+  files.value.splice(index, 1);
 };
 </script>
 
@@ -96,47 +108,59 @@ const handleClose = () => {
           type="file"
           class="hidden"
           accept=".pdf,.xlsx,.csv"
+          multiple
+          webkitdirectory
           @change="onFileChange"
         />
       </div>
 
       <div
-        v-if="file"
-        class="flex items-center justify-between bg-blue-50 p-3 rounded-md border border-blue-100"
+        v-if="files.length > 0"
+        class="max-h-48 overflow-y-auto space-y-2 mt-4 pr-1"
       >
-        <div class="flex items-center overflow-hidden">
-          <svg
-            class="h-5 w-5 text-[#1226AB] mr-2 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="text-sm text-gray-700 truncate font-medium">{{
-            file.name
-          }}</span>
-        </div>
-        <button
-          @click.stop="file = null"
-          class="text-red-500 hover:text-red-700 ml-2"
+        <div
+          v-for="(f, index) in files"
+          :key="index"
+          class="flex items-center justify-between bg-blue-50 p-2 rounded-md border border-blue-100 transition-all"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+          <div class="flex items-center overflow-hidden">
+            <svg
+              class="h-4 w-4 text-[#1226AB] mr-2 flex-shrink-0"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span class="text-xs text-gray-700 truncate font-medium">
+              {{ f.name }}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            @click.stop="removeFile(index)"
+            class="text-red-400 hover:text-red-600 transition-colors p-1"
+            title="Quitar archivo"
           >
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
+            <svg
+              class="h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </BaseModal>

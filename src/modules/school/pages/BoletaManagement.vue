@@ -25,7 +25,7 @@
       </div>
 
       <!-- Tabla de resultados -->
-      <div v-if="boletaData" class="overflow-x-auto">
+      <div v-if="boletasData" class="overflow-x-auto">
         <BaseTable
           :columns="columns"
           :data="formattedBoletaData"
@@ -71,9 +71,9 @@ const openUploadModal = () => {
 };
 
 const formattedBoletaData = computed(() => {
-  if (!boletaData.value) return [];
+  if (!boletasData.value) return [];
 
-  return boletaData.value.map((boleta: any) => ({
+  return boletasData.value.map((boleta: any) => ({
     alumno: boleta.alumno,
     numero_control: boleta.numero_control,
     created_at: new Date(boleta.created_at).toLocaleDateString("es-MX"),
@@ -82,5 +82,5 @@ const formattedBoletaData = computed(() => {
 });
 
 // Datos del store
-const { boletaData } = storeToRefs(boletaStore);
+const { boletasData } = storeToRefs(boletaStore);
 </script>
