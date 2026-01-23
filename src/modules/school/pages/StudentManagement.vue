@@ -24,17 +24,10 @@
             :icon="PlusIcon"
           />
           <BaseButton
+            @click="openImportModal"
             text="Registrar estudiantes"
             customClass="bg-blue-700 hover:bg-blue-800"
             :icon="PlusIcon"
-            @click="openFileDialog"
-          />
-          <input
-            ref="fileInput"
-            type="file"
-            accept=".csv"
-            class="hidden"
-            @change="onFileSelected"
           />
         </div>
       </div>
@@ -64,6 +57,7 @@
     />
 
     <AddStudentModal :show="showAddModal" @close="closeAddModal" />
+    <ImportStudentModal :show="showImportModal" @close="closeImportModal" />
   </SchoolLayout>
 </template>
 
@@ -78,36 +72,15 @@ import PlusIcon from "@/assets/icons/Plus.svg";
 import { useStudentsStore } from "@/store/student.store";
 import ConfirmDeleteModal from "@/components/elements/ConfirmDeleteModal.vue";
 import AddStudentModal from "../components/AddStudentModal.vue";
+import ImportStudentModal from "../components/ImportStudentModal.vue";
 
 const studentsStore = useStudentsStore();
 
-// ESTADO PARA LA ELIMINACIÓN
+// ESTADOS PARA MODALES
 const showDeleteModal = ref(false);
 const studentToDelete = ref<any>(null);
-
+const showImportModal = ref(false);
 const showAddModal = ref(false);
-
-const fileInput = ref<HTMLInputElement | null>(null);
-
-function openFileDialog() {
-  fileInput.value?.click();
-}
-
-async function onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-
-  if (!file) return;
-
-  try {
-    await studentsStore.importCSV(file);
-    console.log("Importación completada");
-  } catch (error) {
-    console.error("Error importando CSV:", error);
-  } finally {
-    input.value = "";
-  }
-}
 
 const columns = [
   { label: "Nombre", field: "nombre" },
@@ -170,6 +143,15 @@ const openAddModal = () => {
 
 const closeAddModal = () => {
   showAddModal.value = false;
+};
+
+// Funciones para el modal de importación (CSV)
+const openImportModal = () => {
+  showImportModal.value = true;
+};
+
+const closeImportModal = () => {
+  showImportModal.value = false;
 };
 
 // Descargar formato CSV
