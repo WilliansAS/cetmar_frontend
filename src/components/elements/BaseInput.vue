@@ -18,7 +18,7 @@
       @input="$emit('update:modelValue', $event.target.value)"
       :class="[
         'border border-gray-300 rounded-lg outline-none transition w-full',
-        'px-3 py-2 text-base sm:px-4 sm:py-3 sm:text-lg',
+        'px-3 py-2 text-base sm:px-4 sm:py-2.5 sm:text-lg',
         'focus:ring-2 focus:ring-[#1226AB] focus:border-transparent',
         inputClass, // Permite sobrescribir o complementar estilos
       ]"
