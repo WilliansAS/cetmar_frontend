@@ -74,7 +74,7 @@ const removeFile = (index: number) => {
     @close="handleClose"
     @confirm="handleUpload"
   >
-    <div class="space-y-4">
+    <div class="space-y-4 w-full max-w-sm">
       <p class="text-sm text-gray-600">
         Adjunta el archivo de la boleta para procesar las calificaciones.
       </p>

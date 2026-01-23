@@ -54,7 +54,7 @@ const handleConfirm = () => {
     @close="emit('close')"
     @confirm="handleConfirm"
   >
-    <div class="space-y-4">
+    <div class="space-y-4 w-full max-w-sm">
       <BaseInput
         id="firstName"
         label="Nombres"
