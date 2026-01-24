@@ -3,32 +3,29 @@ import { ref } from "vue";
 import { useBoletaStore } from "../../../store/school.store";
 import Upload from "@/assets/icons/Upload.svg";
 import BaseModal from "@/components/elements/BaseModal.vue";
+import LoadingModal from "@/components/elements/LoadingModal.vue";
 
-// Props: Solo necesitamos saber si mostrarlo
 const props = defineProps<{
   show: boolean;
 }>();
 
-// Emits
 const emit = defineEmits<{
   (e: "close"): void;
-  (e: "success"): void; // Para avisar al padre que recargue la tabla si es necesario
+  (e: "success"): void;
 }>();
 
 const boletaStore = useBoletaStore();
 const files = ref<File[]>([]);
 const fileInput = ref<HTMLInputElement | null>(null);
+const folderInput = ref<HTMLInputElement | null>(null);
 const dragging = ref(false);
+const isUploading = ref(false);
 
-// Trigger para abrir el input de archivo oculto
-const triggerFileInput = () => {
-  fileInput.value?.click();
-};
+const triggerFileInput = () => fileInput.value?.click();
+const triggerFolderInput = () => folderInput.value?.click();
 
-// Manejar selección de archivo
 const onFileChange = (e: Event | DragEvent) => {
   let selectedFiles: FileList | null = null;
-
   if (e instanceof DragEvent) {
     selectedFiles = e.dataTransfer?.files || null;
   } else {
@@ -36,26 +33,25 @@ const onFileChange = (e: Event | DragEvent) => {
   }
 
   if (selectedFiles) {
-    // Convertimos FileList a Array y lo acumulamos
     files.value = [...files.value, ...Array.from(selectedFiles)];
   }
 };
 
-// Lógica de subida
 const handleUpload = async () => {
   if (files.value.length === 0) return;
-
+  emit("close");
+  isUploading.value = true;
   try {
     await boletaStore.subirBoleta(files.value);
     files.value = [];
     emit("success");
-    emit("close");
   } catch (error) {
     console.error("Error subiendo boleta", error);
+  } finally {
+    isUploading.value = false;
   }
 };
 
-// Cerrar modal y limpiar
 const handleClose = () => {
   files.value = [];
   emit("close");
@@ -75,18 +71,17 @@ const removeFile = (index: number) => {
     @confirm="handleUpload"
   >
     <div class="space-y-4 w-full max-w-sm">
-      <p class="text-sm text-gray-600">
-        Adjunta el archivo de la boleta para procesar las calificaciones.
+      <p class="text-sm text-gray-600 font-medium">
+        Adjunta los archivos de las boletas para procesar las calificaciones.
       </p>
 
       <div
-        class="border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 group"
+        class="border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center transition-colors duration-200 group relative"
         :class="[
           dragging
             ? 'border-[#1226AB] bg-blue-50'
-            : 'border-gray-400 hover:bg-gray-50',
+            : 'border-gray-400 hover:bg-gray-50 bg-gray-50/50',
         ]"
-        @click="triggerFileInput"
         @dragover.prevent="dragging = true"
         @dragleave.prevent="dragging = false"
         @drop.prevent="
@@ -94,21 +89,49 @@ const removeFile = (index: number) => {
           dragging = false;
         "
       >
-        <div class="mb-3 text-gray-400 group-hover:text-gray-500">
-          <img :src="Upload" alt="icon" class="w-24 h-24" />
+        <div
+          class="mb-4 text-gray-400 group-hover:text-[#1226AB] transition-colors"
+        >
+          <img :src="Upload" alt="icon" class="w-16 h-16" />
         </div>
 
-        <p class="text-gray-500 font-medium text-center">
-          Selecciona un archivo o carpeta de documentos
+        <div class="flex flex-col gap-3 w-full px-2 z-10">
+          <button
+            type="button"
+            @click.stop="triggerFileInput"
+            class="w-full py-2.5 px-4 rounded-md bg-[#1226AB] text-white text-xs font-bold shadow-md hover:bg-opacity-90 transition-all active:scale-95 cursor-pointer"
+          >
+            Seleccionar Archivos PDF
+          </button>
+
+          <button
+            type="button"
+            @click.stop="triggerFolderInput"
+            class="w-full py-2.5 px-4 rounded-md bg-emerald-600 text-white text-xs font-bold shadow-md hover:bg-emerald-700 transition-all active:scale-95 cursor-pointer"
+          >
+            Seleccionar Carpeta de Boletas
+          </button>
+        </div>
+
+        <p
+          class="text-[10px] text-gray-400 mt-4 font-bold tracking-wider uppercase"
+        >
+          Solo se aceptan archivos .pdf
         </p>
-        <p class="text-xs text-gray-400 mt-1">Soporta: .pdf, .xlsx, .csv</p>
 
         <input
           ref="fileInput"
           type="file"
           class="hidden"
-          accept=".pdf,.xlsx,.csv"
+          accept=".pdf"
           multiple
+          @change="onFileChange"
+        />
+
+        <input
+          ref="folderInput"
+          type="file"
+          class="hidden"
           webkitdirectory
           @change="onFileChange"
         />
@@ -116,19 +139,18 @@ const removeFile = (index: number) => {
 
       <div
         v-if="files.length > 0"
-        class="max-h-48 overflow-y-auto space-y-2 mt-4 pr-1"
+        class="max-h-40 overflow-y-auto space-y-2 mt-2 pr-1 custom-scrollbar"
       >
         <div
           v-for="(f, index) in files"
           :key="index"
-          class="flex items-center justify-between bg-blue-50 p-2 rounded-md border border-blue-100 transition-all"
+          class="flex items-center justify-between bg-blue-50 p-2 rounded-md border border-blue-100"
         >
           <div class="flex items-center overflow-hidden">
             <svg
               class="h-4 w-4 text-[#1226AB] mr-2 flex-shrink-0"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
               fill="currentColor"
+              viewBox="0 0 20 20"
             >
               <path
                 fill-rule="evenodd"
@@ -136,23 +158,17 @@ const removeFile = (index: number) => {
                 clip-rule="evenodd"
               />
             </svg>
-            <span class="text-xs text-gray-700 truncate font-medium">
-              {{ f.name }}
-            </span>
+            <span class="text-[11px] text-gray-700 truncate font-semibold">{{
+              f.name
+            }}</span>
           </div>
 
           <button
             type="button"
             @click.stop="removeFile(index)"
-            class="text-red-400 hover:text-red-600 transition-colors p-1"
-            title="Quitar archivo"
+            class="text-red-500 hover:text-red-700 transition-colors p-1 cursor-pointer"
           >
-            <svg
-              class="h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fill-rule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -164,4 +180,20 @@ const removeFile = (index: number) => {
       </div>
     </div>
   </BaseModal>
+
+  <LoadingModal
+    :show="isUploading"
+    title="Procesando documentos..."
+    subtitle="Procesando archivos PDF, por favor espera."
+  />
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+</style>

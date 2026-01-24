@@ -4,6 +4,7 @@ import Papa, { type ParseResult } from "papaparse";
 import UploadIcon from "@/assets/icons/Upload.svg";
 import BaseModal from "@/components/elements/BaseModal.vue";
 import { useStudentsStore } from "@/store/student.store";
+import LoadingModal from "@/components/elements/LoadingModal.vue";
 
 const props = defineProps<{
   show: boolean;
@@ -20,7 +21,7 @@ const studentsStore = useStudentsStore();
 const file = ref<File | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 const dragging = ref(false);
-const isLoading = ref(false);
+const isImporting = ref(false); // Estado para el modal de carga
 
 // Estados para la representación visual (Spreadsheet)
 const previewRows = ref<any[]>([]);
@@ -62,14 +63,16 @@ const onFileChange = (e: Event | DragEvent) => {
 const handleConfirmUpload = async () => {
   if (!file.value) return;
 
-  isLoading.value = true;
+  emit("close");
+  isImporting.value = true;
+
   try {
     await studentsStore.importCSV(file.value);
     handleClose();
   } catch (error) {
     console.error("Error en la importación:", error);
   } finally {
-    isLoading.value = false;
+    isImporting.value = false;
   }
 };
 
@@ -230,4 +233,10 @@ const handleClose = () => {
       </div>
     </div>
   </BaseModal>
+
+  <LoadingModal
+    :show="isImporting"
+    title="Registrando estudiantes..."
+    subtitle="Procesando el archivo CSV, por favor espera un momento."
+  />
 </template>
