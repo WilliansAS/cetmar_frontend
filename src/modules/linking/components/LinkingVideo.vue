@@ -43,20 +43,52 @@
     </div>
 
     <!-- Modal -->
-    <LinkingVideoModal
-      :visible="isModalOpen"
+    <BaseModal
+      :show="isModalOpen"
+      title="Subir video"
+      mode="create"
       @close="isModalOpen = false"
-      @save="handleSave"
-    />
+      @confirm="handleConfirm"
+    >
+      <div
+        class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#1226AB] transition"
+        @dragover.prevent
+        @drop="onDrop"
+        @click="fileInput?.click()"
+      >
+        <input
+          ref="fileInput"
+          type="file"
+          accept="video/*"
+          class="hidden"
+          @change="onFileChange"
+        />
+
+        <div v-if="!selectedFile" class="flex flex-col items-center gap-2">
+          <p class="text-gray-600 font-medium">
+            Arrastra un video aquí o haz clic para seleccionar
+          </p>
+          <p class="text-sm text-gray-400">
+            Formatos permitidos: MP4, AVI, MOV
+          </p>
+        </div>
+
+        <div v-else class="flex flex-col gap-4">
+          <p class="text-sm font-semibold text-gray-700">
+            {{ selectedFile.name }}
+          </p>
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
+import BaseModal from "@/components/elements/BaseModal.vue";
 import VideoIcon from "@/assets/icons/Play.svg";
 import PlayIcon from "@/assets/icons/VideoPlay.svg";
-import LinkingVideoModal from "./elements/LinkingVideoModal.vue";
 
 const props = defineProps({
   thumbnailSrc: { type: String, default: "/public/images/NuestraInstitucionHome.svg" },
@@ -65,11 +97,44 @@ const props = defineProps({
 
 const emit = defineEmits(["change", "delete"]);
 
+const videoName = ref(props.videoName);
+const thumbnailSrc = ref(props.thumbnailSrc);
+
 const isModalOpen = ref(false);
 
-const handleDelete = () => emit("delete");
-const handleSave = (data: any) => {
-  console.log("Archivo guardado:", data);
+const selectedFile = ref<File | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const handleFile = (file: File) => {
+  if (!file.type.startsWith("video/")) return;
+  selectedFile.value = file;
+};
+
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    handleFile(input.files[0]);
+  }
+};
+
+const onDrop = (event: DragEvent) => {
+  event.preventDefault();
+  if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
+    handleFile(event.dataTransfer.files[0]);
+  }
+};
+
+const handleDelete = () => {
+  videoName.value = "cetmar.mp4";
+  thumbnailSrc.value = "/public/images/NuestraInstitucionHome.svg";
+  emit("delete");
+};
+
+const handleConfirm = () => {
+  if (!selectedFile.value) return;
+  videoName.value = selectedFile.value.name;
+  emit("change", { name: selectedFile.value.name });
+  selectedFile.value = null;
   isModalOpen.value = false;
 };
 </script>

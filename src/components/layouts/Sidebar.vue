@@ -50,7 +50,7 @@
                       :src="item.iconSrc"
                       alt=""
                       class="w-5 h-5"
-                      :class="{ 'filter-white': route.path === item.route }"
+                      :class="route.path === item.route ? 'filter-white' : 'filter-black'"
                     />
                     <span v-if="!isCollapsed" class="ml-3">{{
                       item.label
@@ -70,7 +70,7 @@
                     class="w-3 h-3 transition-transform"
                     :class="[
                       { 'rotate-180': openDropdowns[item.label] },
-                      { 'filter-white': route.path === item.route },
+                      route.path === item.route ? 'filter-white' : 'filter-black',
                     ]"
                   />
                 </button>
@@ -112,7 +112,7 @@
                   :src="item.iconSrc"
                   alt=""
                   class="w-5 h-5 transition-all"
-                  :class="isActive ? 'filter-white' : ''"
+                  :class="isActive ? 'filter-white' : 'filter-black'"
                 />
                 <span v-if="!isCollapsed" class="ml-3">{{ item.label }}</span>
               </a>
@@ -128,7 +128,7 @@
           href="/login"
           class="flex items-center justify-center p-3 rounded-md text-[#202224] font-semibold hover:bg-gray-100"
         >
-          <img :src="LogoutIcon" alt="Cerrar sesión" class="w-5 h-5" />
+          <img :src="LogoutIcon" alt="Cerrar sesión" class="w-5 h-5 filter-black" />
           <span v-if="!isCollapsed" class="ml-3">Cerrar Sesión</span>
         </a>
       </div>
@@ -141,7 +141,7 @@
             @click="toggleSidebar"
             class="p-2 text-gray-500 rounded-full hover:bg-gray-100 focus:outline-none cursor-pointer"
           >
-            <img :src="MenuIcon" alt="menu" class="w-5 h-5" />
+            <img :src="MenuIcon" alt="menu" class="w-5 h-5 filter-black" />
           </button>
         </div>
         <div class="flex items-center">
@@ -158,7 +158,7 @@
             <span
               class="flex items-center justify-center w-7 h-7 border border-gray-300 rounded-full"
             >
-              <img :src="ExpandIcon" alt="opciones" class="w-4 h-4" />
+              <img :src="ExpandIcon" alt="opciones" class="w-4 h-4 filter-black" />
             </span>
           </button>
         </div>
@@ -213,6 +213,10 @@ const isParentActive = (parentItem: NavItem) => {
 <style scoped>
 .filter-white {
   filter: brightness(0) invert(1);
+}
+
+.filter-black {
+  filter: brightness(0);
 }
 
 /* Estilo para el sub-item activo */

@@ -14,6 +14,10 @@ import DashboardLinking from "@/modules/linking/pages/DashboardLinking.vue";
 import DashboardAdmin from "@/modules/admin/pages/DashboardAdmin.vue";
 import UsersAdmin from "@/modules/admin/pages/UsersAdmin.vue";
 import RolesAdmin from "@/modules/admin/pages/RolesAdmin.vue";
+import LinkingAbout from "@/modules/linking/pages/LinkingAbout.vue";
+import LinkingCalendar from "@/modules/linking/pages/LinkingCalendar.vue";
+import LinkingHome from "@/modules/linking/pages/LinkingHome.vue";
+import LinkingSpecialty from "@/modules/linking/pages/LinkingSpecialty.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,8 +81,28 @@ const router = createRouter({
       path: "/dashboard/vinculacion",
       name: "linking-dashboard",
       component: DashboardLinking,
-    }
-    ,
+    },
+    {
+      path: "/dashboard/vinculacion/inicio",
+      name: "linking-home",
+      component: LinkingHome,
+    },
+    {
+      path: "/dashboard/vinculacion/nosotros",
+      name: "linking-about",
+      component: LinkingAbout,
+    },
+    {
+      path: "/dashboard/vinculacion/calendario",
+      name: "linking-calendar",
+      component: LinkingCalendar,
+    },
+    {
+      path: "/dashboard/vinculacion/especialidades/:slug",
+      name: "linking-specialty",
+      component: LinkingSpecialty,
+    },
+
     {
       path: "/dashboard/admin",
       name: "admin-dashboard",

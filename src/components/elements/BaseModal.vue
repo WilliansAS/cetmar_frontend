@@ -5,11 +5,13 @@ interface Props {
   show: boolean;
   title: string;
   mode?: "create" | "edit" | "view"; // Prop para detectar el modo (opcional, por defecto 'create')
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
 }
 
 // Valores por defecto
 const props = withDefaults(defineProps<Props>(), {
   mode: "create",
+  size: "md",
 });
 
 // Definición de Eventos
@@ -23,6 +25,18 @@ const confirmButtonText = computed(() => {
   if (props.mode === "edit") return "Guardar Cambios";
   if (props.mode === "create") return "Guardar";
   return "Aceptar";
+});
+
+// Computado: Clase de tamaño del modal
+const sizeClass = computed(() => {
+  const sizes = {
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    xl: "max-w-xl",
+    "2xl": "max-w-2xl",
+  };
+  return sizes[props.size];
 });
 
 // Función para manejar el cierre
@@ -44,7 +58,7 @@ const handleConfirm = () => {
       @click.self="handleClose"
     >
       <div
-        class="bg-white rounded-lg shadow-xl p-4 w-full max-w-fit mx-4 transform transition-all flex flex-col max-h-[90vh]"
+        :class="`bg-white rounded-lg shadow-xl p-4 w-full ${sizeClass} mx-4 transform transition-all flex flex-col max-h-[90vh]`"
         role="dialog"
         aria-modal="true"
       >
