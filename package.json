@@ -12,6 +12,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
+    "papaparse": "^5.5.3",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.14",
     "vue": "^3.5.22",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/chart.js": "^2.9.41",
     "@types/node": "^24.6.0",
+    "@types/papaparse": "^5.5.2",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { BoletaData } from "@/interfaces/IBoleta";
-import { subirBoletaService } from "../../api/boletas.api";
+import { subirBoletaService } from "../api/boletas.api";
 
 export const useBoletaStore = defineStore("boleta", () => {
   const boletasData = ref<BoletaData[]>([]);

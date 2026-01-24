@@ -44,7 +44,7 @@ const handleConfirm = () => {
       @click.self="handleClose"
     >
       <div
-        class="bg-white rounded-lg shadow-xl p-4 w-full max-w-md mx-4 transform transition-all flex flex-col max-h-[90vh]"
+        class="bg-white rounded-lg shadow-xl p-4 w-full max-w-fit mx-4 transform transition-all flex flex-col max-h-[90vh]"
         role="dialog"
         aria-modal="true"
       >
