@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import LinkingLayout from "../components/LinkingLayout.vue";
 import LinkingImages, { type ImageItem } from "../components/LinkingImages.vue";
 
 // HARDCODE TEMPORAL 
@@ -34,7 +33,6 @@ const vision = ref<ImageItem[]>([
 </script>
 
 <template>
-  <LinkingLayout>
     <div class="flex flex-col w-full p-6 gap-6">
 
       <!-- Header -->
@@ -82,5 +80,4 @@ const vision = ref<ImageItem[]>([
         />
       </div>
     </div>
-  </LinkingLayout>
 </template>

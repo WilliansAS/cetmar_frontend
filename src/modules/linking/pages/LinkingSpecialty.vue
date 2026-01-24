@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import LinkingLayout from "@/modules/linking/components/LinkingLayout.vue";
 import LinkingImages from "@/modules/linking/components/LinkingImages.vue";
 import SpecialtyActivities from "@/modules/linking/components/SpecialtyActivities.vue";
 
@@ -60,7 +59,6 @@ watch(
 </script>
 
 <template>
-  <LinkingLayout>
     <div v-if="specialty" class="flex flex-col w-full p-6 gap-8">
       <!-- ================= HEADER ================= -->
       <div>
@@ -106,5 +104,4 @@ watch(
     <div v-else class="p-6 text-gray-500">
       Especialidad no encontrada
     </div>
-  </LinkingLayout>
 </template>

@@ -77,31 +77,37 @@ const router = createRouter({
       name: "director-dashboard",
       component: DashboardDirector, 
     },
-    {
+   {
       path: "/dashboard/vinculacion",
-      name: "linking-dashboard",
-      component: DashboardLinking,
+      component: DashboardLinking, 
+      children: [
+        {
+          path: "",
+          redirect: "dashboard/vinculacion/inicio", 
+        },
+        {
+          path: "inicio",
+          name: "linking-home",
+          component: LinkingHome,
+        },
+        {
+          path: "nosotros",
+          name: "linking-about",
+          component: LinkingAbout,
+        },
+        {
+          path: "calendario",
+          name: "linking-calendar",
+          component: LinkingCalendar,
+        },
+        {
+          path: "especialidades/:slug",
+          name: "linking-specialty",
+          component: LinkingSpecialty,
+        },
+      ],
     },
-    {
-      path: "/dashboard/vinculacion/inicio",
-      name: "linking-home",
-      component: LinkingHome,
-    },
-    {
-      path: "/dashboard/vinculacion/nosotros",
-      name: "linking-about",
-      component: LinkingAbout,
-    },
-    {
-      path: "/dashboard/vinculacion/calendario",
-      name: "linking-calendar",
-      component: LinkingCalendar,
-    },
-    {
-      path: "/dashboard/vinculacion/especialidades/:slug",
-      name: "linking-specialty",
-      component: LinkingSpecialty,
-    },
+
 
     {
       path: "/dashboard/admin",

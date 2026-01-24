@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import LinkingLayout from "../components/LinkingLayout.vue";
 import LinkingImages, { type ImageItem } from "../components/LinkingImages.vue";
 import LinkingVideo from "../components/LinkingVideo.vue";
 
@@ -27,7 +26,6 @@ const galleryImages = ref<ImageItem[]>([
 </script>
 
 <template>
-  <LinkingLayout>
     <div class="flex flex-col w-full p-6 gap-10">
 
       <!-- Header -->
@@ -114,5 +112,4 @@ const galleryImages = ref<ImageItem[]>([
       </section>
 
     </div>
-  </LinkingLayout>
 </template>
