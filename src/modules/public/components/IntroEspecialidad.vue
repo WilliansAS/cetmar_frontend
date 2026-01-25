@@ -7,18 +7,25 @@
       v-html="intro.titulo"
     ></h2>
 
+    <!-- LOGO RESALTADO -->
+    <div class="mb-8 flex justify-center">
+      <img
+        :src="intro.logo"
+        alt="Logo de la especialidad"
+        class="w-24 h-24 md:w-47 md:h-47 object-contain animate-pulse rounded-2xl"
+      />
+    </div>
+
     <p
       class="text-gray-600 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10"
     >
       {{ intro.descripcion }}
     </p>
-
-   
   </section>
 </template>
 
 <script setup lang="ts">
-defineProps<{ intro: { titulo: string; descripcion: string; imagen: string } }>()
+defineProps<{ intro: { titulo: string; descripcion: string; imagen: string , logo:string} }>()
 </script>
 
 <style scoped>

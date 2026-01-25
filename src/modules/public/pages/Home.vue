@@ -63,7 +63,7 @@
     </section>
 
     <!-- ESPECIALIDADES -->
-    <section class="py-20 bg-gradient-to-b from-white to-slate-50">
+   <section class="py-20 bg-gradient-to-b from-white to-slate-50">
       <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-3">
           Nuestra Oferta Educativa
@@ -73,13 +73,13 @@
         >
           Carreras Técnicas
         </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           <div
             v-for="esp in especialidades"
             :key="esp.id"
             @click="goToEspecialidad(esp.id)"
-            class="relative group aspect-[3/4] rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-all"
+            class="relative group aspect-[5/7] rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-all"
           >
             <img
               :src="esp.hero.imagen"
@@ -89,19 +89,19 @@
             <div class="absolute inset-0 bg-blue-700/20"></div>
 
             <!-- Fondo para el logo -->
-            <div class="absolute top-4 left-4 w-20 h-20 bg-white/60 rounded-lg backdrop-blur-sm"></div>
+            <div class="absolute top-2 left-2 w-12 h-12 md:w-20 md:h-20 bg-white/60 rounded-lg backdrop-blur-sm"></div>
 
             <!-- Logo de la carrera -->
             <img
               :src="esp.hero.logo"
-              class="absolute top-6 left-6 w-16 h-16 object-contain drop-shadow-lg z-10"
+              class="absolute top-3 left-3 w-10 h-10 md:w-16 md:h-16 object-contain drop-shadow-lg z-10"
             />
 
-            <div class="absolute bottom-0 p-6 z-10">
-              <h3 class="text-xl font-bold text-white">
+            <div class="absolute bottom-0 p-3 md:p-6 z-10">
+              <h3 class="text-sm md:text-xl font-bold text-white">
                 {{ esp.hero.titulo }}
               </h3>
-              <span class="text-white/80 text-sm">Conocer más</span>
+              <span class="text-white/80 text-xs md:text-sm">Conocer más</span>
             </div>
           </div>
         </div>
