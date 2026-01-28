@@ -28,7 +28,6 @@ const specialtiesMap: Record<string, SpecialtyData> = {
   sig: sig,
 };
 
-
 const specialty = computed(() => {
   return specialtiesMap[route.params.slug as string];
 });
@@ -59,49 +58,58 @@ watch(
 </script>
 
 <template>
-    <div v-if="specialty" class="flex flex-col w-full p-6 gap-8">
-      <!-- ================= HEADER ================= -->
-      <div>
-        <h1 class="text-3xl font-semibold text-gray-900">
-          Contenido: {{ specialty.title }}
-        </h1>
-        <p class="text-gray-500 text-base font-medium mt-1">
-          Gestiona el contenido visual y las actividades correspondientes a esta especialidad
-        </p>
-      </div>
+  <div v-if="specialty" class="flex flex-col w-full p-6 gap-8">
+    <!-- ================= HEADER ================= -->
+    <div>
+      <h1 class="text-3xl font-semibold text-gray-900">
+        Contenido: {{ specialty.title }}
+      </h1>
+      <p class="text-gray-500 text-base font-medium mt-1">
+        Gestiona el contenido visual y las actividades correspondientes a esta especialidad
+      </p>
+    </div>
 
-      <!-- ================= BANNER ================= -->
-      <section>
-        <LinkingImages
-          title="Banner de la especialidad"
-          :images="bannerImages"
-          :maxImages="1"
-          galleryMode
-          description="Imagen principal que representa la especialidad en la página de detalle."
-          @update:images="bannerImages = $event"
-        />
-      </section>
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- BANNER EN MITAD DEL ANCHO -->
+      <LinkingImages
+        title="Banner de la especialidad"
+        :images="bannerImages"
+        :maxImages="1"
+        description="Imagen principal que representa la especialidad en la página de detalle. Se muestra en la parte superior. Tamaño recomendado: 1200x800px."
+        variant="banner"
+        @update:images="bannerImages = $event"
+      />
 
-      <!-- ================= ACTIVIDADES ================= -->
-      <section class="flex flex-col gap-4">
-        <div class="flex items-center justify-between">
+    </div>
+
+    <!-- ================= ACTIVIDADES ================= -->
+    <section class="flex flex-col gap-6">
+      <div class="flex items-center justify-between">
+        <div>
           <h2 class="text-xl font-semibold text-gray-900">
             Actividades de la especialidad
           </h2>
-
-          <span class="text-sm text-gray-500">
-            Total: {{ activities.length }}
-          </span>
+          <p class="text-gray-500 text-sm mt-1">
+            Gestiona las actividades destacadas de {{ specialty.title }}
+          </p>
         </div>
 
-        <SpecialtyActivities
-          v-model:activities="activities"
-        />
-      </section>
-    </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-500">
+            Total de actividades: {{ activities.length }}
+          </span>
+        </div>
+      </div>
 
-    <!-- ================= FALLBACK ================= -->
-    <div v-else class="p-6 text-gray-500">
-      Especialidad no encontrada
-    </div>
+      <SpecialtyActivities
+        v-model:activities="activities"
+      />
+    </section>
+  </div>
+
+  <!-- ================= FALLBACK ================= -->
+  <div v-else class="p-6 text-gray-500">
+    Especialidad no encontrada
+  </div>
 </template>

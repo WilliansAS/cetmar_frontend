@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
 import BaseModal from "@/components/elements/BaseModal.vue";
+import ConfirmDelete from "@/components/elements/ConfirmDeleteModal.vue";
 import ImagesIcon from "@/assets/icons/Image.svg";
 
 export interface ImageItem {
@@ -13,48 +14,133 @@ const props = defineProps<{
   title: string;
   images: ImageItem[];
   maxImages?: number;
-  expectedNames?: string[];
-  galleryMode?: boolean;
   description?: string;
+  layout?: "grid" | "list";
+  keepSlots?: boolean;
+  fixedSlots?: boolean;
+  slotLabels?: string[];
+  variant?: "default" | "banner";
 }>();
 
 const emit = defineEmits<{
   (e: "update:images", value: ImageItem[]): void;
 }>();
 
+const isList = computed(() => props.layout === "list");
 const maxImages = computed(() => props.maxImages ?? Infinity);
+const keepSlots = computed(() => props.keepSlots ?? false);
+const fixedSlots = computed(() => props.fixedSlots ?? false);
+const isBannerVariant = computed(() => props.variant === "banner");
 
-const isModalOpen = ref(false);
+/* =======================
+   MODALES
+======================= */
+const isUploadModalOpen = ref(false);
+const isPreviewModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+
 const editingIndex = ref<number | null>(null);
+const previewImage = ref<ImageItem | null>(null);
+const pendingDeleteIndex = ref<number | null>(null);
 
-const openAddModal = (index?: number) => {
-  editingIndex.value = typeof index === "number" ? index : null;
-  isModalOpen.value = true;
+/* =======================
+   FUNCIONES AUXILIARES
+======================= */
+const getSlotLabel = (index: number): string => {
+  if (props.slotLabels && props.slotLabels[index]) {
+    return props.slotLabels[index];
+  }
+  return `Especialidad ${index + 1}`;
+};
+
+const getDisplayName = (
+  image: ImageItem | undefined,
+  index: number,
+): string => {
+  if (!image || !image.src) {
+    return getSlotLabel(index);
+  }
+  return image.name || getSlotLabel(index);
+};
+
+const hasImage = (index: number): boolean => {
+  return Boolean(props.images[index]?.src);
+};
+
+/* =======================
+   ACCIONES
+======================= */
+const openAddModal = () => {
+  editingIndex.value = null;
+  isUploadModalOpen.value = true;
 };
 
 const openEditModal = (index: number) => {
   editingIndex.value = index;
-  isModalOpen.value = true;
+  isUploadModalOpen.value = true;
 };
 
-const removeImage = (index: number) => {
+const openPreview = (image: ImageItem) => {
+  previewImage.value = image;
+  isPreviewModalOpen.value = true;
+};
+
+const handlePreviewClick = (index: number) => {
+  const image = props.images[index];
+  if (hasImage(index) && image) {
+    openPreview(image);
+  }
+};
+
+const askDelete = (index: number) => {
+  pendingDeleteIndex.value = index;
+  isDeleteModalOpen.value = true;
+};
+
+const confirmDelete = () => {
+  if (pendingDeleteIndex.value === null) return;
+
   const updated = [...props.images];
 
-  if (props.expectedNames) {
-    updated[index] = undefined as any;
+  if (fixedSlots.value) {
+    // Para slots fijos: solo borra la imagen pero mantiene el slot vacío
+    updated[pendingDeleteIndex.value] = {
+      src: "",
+      name: getSlotLabel(pendingDeleteIndex.value),
+    };
   } else {
-    updated.splice(index, 1);
+    // Comportamiento normal: elimina el elemento
+    updated.splice(pendingDeleteIndex.value, 1);
   }
 
   emit("update:images", updated);
+
+  pendingDeleteIndex.value = null;
+  isDeleteModalOpen.value = false;
+};
+
+/* ==UPLOAD== */
+const selectedFile = ref<File | null>(null);
+const previewUrl = ref<string | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.[0]) return;
+
+  const file = input.files[0];
+  if (!file.type.startsWith("image/")) return;
+
+  selectedFile.value = file;
+  previewUrl.value = URL.createObjectURL(file);
 };
 
 const handleConfirm = () => {
-  if (!selectedFile.value || !previewUrl.value) return;
+  if (!previewUrl.value) return;
 
   const image: ImageItem = {
     src: previewUrl.value,
-    name: selectedFile.value.name,
+    name: selectedFile.value?.name || getSlotLabel(editingIndex.value || 0),
   };
 
   const updated = [...props.images];
@@ -62,203 +148,229 @@ const handleConfirm = () => {
   if (editingIndex.value !== null) {
     updated[editingIndex.value] = image;
   } else {
-    // Solo permitir push cuando NO hay expectedNames
     updated.push(image);
   }
 
   emit("update:images", updated);
 
-  // Reset
   selectedFile.value = null;
   previewUrl.value = null;
-  isModalOpen.value = false;
   editingIndex.value = null;
+  isUploadModalOpen.value = false;
 };
-
-const selectedFile = ref<File | null>(null);
-const previewUrl = ref<string | null>(null);
-const fileInput = ref<HTMLInputElement | null>(null);
-
-const handleFile = (file: File) => {
-  if (!file.type.startsWith("image/")) return;
-
-  selectedFile.value = file;
-  previewUrl.value = URL.createObjectURL(file);
-};
-
-const onFileChange = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    handleFile(input.files[0]);
-  }
-};
-
-const onDrop = (event: DragEvent) => {
-  event.preventDefault();
-  if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
-    handleFile(event.dataTransfer.files[0]);
-  }
-};
-
-const isImageModalOpen = ref(false);
-const selectedImage = ref<ImageItem | null>(null);
-
-const openImageModal = (image: ImageItem) => {
-  selectedImage.value = image;
-  isImageModalOpen.value = true;
-};
-
-const closeImageModal = () => {
-  isImageModalOpen.value = false;
-  selectedImage.value = null;
-};
-
-const isWide = computed(() => {
-  if (props.galleryMode) {
-    return props.images.length > 1;
-  }
-  const count = props.expectedNames
-    ? props.expectedNames.length
-    : props.images.length;
-  return count > 1;
-});
 </script>
-
 <template>
-  <div
-    :class="[
-      'bg-white shadow-md rounded-2xl p-6 flex flex-col',
-      isWide ? 'w-full' : 'w-full md:w-[48%]',
-    ]"
+  <section
+    class="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-6 w-full"
   >
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-5">
+    <!-- HEADER -->
+    <header class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img :src="ImagesIcon" alt="imagenes" class="w-6 h-6" />
-        <h2 class="text-lg font-semibold text-gray-900">
-          {{ title }}
-        </h2>
+        <img :src="ImagesIcon" class="w-6 h-6" />
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">{{ title }}</h2>
+          <p v-if="description" class="text-sm text-gray-500 mt-1">
+            {{ description }}
+          </p>
+        </div>
       </div>
 
       <BaseButton
-        v-if="!expectedNames && images.length < maxImages"
-        text="+ Añadir imagen"
+        v-if="images.length < maxImages && !fixedSlots"
+        :text="
+          isBannerVariant && images.length === 0
+            ? '+ Añadir imagen'
+            : '+ Cambiar imagen'
+        "
         customClass="bg-[#1226AB] px-4 py-2"
         @click="openAddModal"
       />
-    </div>
+    </header>
 
-    <!-- Description -->
-    <p v-if="description" class="text-gray-500 text-sm mb-4">
-      {{ description }}
-    </p>
-
-    <div v-if="expectedNames" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div v-if="isBannerVariant" class="space-y-4">
       <div
-        v-for="(name, index) in expectedNames"
-        :key="index"
-        class="flex flex-col gap-4 border border-gray-200 rounded-xl p-4"
+        v-if="images.length === 0"
+        class="text-center py-8 border-2 border-dashed border-gray-300 rounded-xl"
       >
-        <!-- Nombre -->
-        <p class="text-gray-800 font-semibold">
-          {{ name }}
-        </p>
+        <p class="text-gray-500 mb-3">No hay imagen cargada</p>
+      </div>
 
-        <!-- Imagen o placeholder -->
+      <div
+        v-else
+        v-for="(image, index) in images"
+        :key="index"
+        class="space-y-4"
+      >
+        <!-- IMAGEN GRANDE -->
         <div
-          v-if="images[index]"
-          class="flex flex-col md:flex-row md:items-center gap-4"
+          class="w-full aspect-[12/4] rounded-xl bg-gray-100 overflow-hidden cursor-pointer border border-gray-200"
+          @click="handlePreviewClick(index)"
         >
           <img
-            :src="images[index].src"
-            alt="imagen"
-            class="w-full md:w-64 h-40 md:h-48 object-cover rounded-lg bg-gray-100 cursor-pointer"
-            @click="openImageModal(images[index])"
+            :src="image.src"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
-
-          <div class="flex gap-4 justify-center md:justify-start">
-            <BaseButton
-              text="Cambiar Imagen"
-              customClass="bg-[#1226AB] px-4 py-2"
-              @click="openEditModal(index)"
-            />
-            <BaseButton
-              text="Eliminar"
-              customClass="bg-red-600 px-4 py-2"
-              @click="removeImage(index)"
-            />
-          </div>
         </div>
 
+        <!-- INFORMACIÓN DE LA IMAGEN -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-medium text-gray-800">{{ image.name }}</h3>
+            <div class="flex gap-2">
+              <BaseButton
+                text="Cambiar"
+                customClass="bg-[#1226AB] px-4 py-2 text-sm"
+                @click="openEditModal(index)"
+              />
+              <BaseButton
+                text="Eliminar"
+                customClass="bg-red-600 px-4 py-2 text-sm"
+                @click="askDelete(index)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =GRID (ESPECIALIDADES CON SLOTS FIJOS)= -->
+    <div
+      v-else-if="!isList && fixedSlots"
+      class="grid grid-cols-2 md:grid-cols-4 gap-4"
+    >
+      <div
+        v-for="(_, index) in maxImages"
+        :key="index"
+        class="bg-gray-50 rounded-xl p-4 flex flex-col gap-3 items-center text-center"
+      >
         <div
-          v-else
-          class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center"
+          class="w-full aspect-[4/3] rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center cursor-pointer"
+          @click="handlePreviewClick(index)"
         >
-          <p class="text-gray-600 font-medium mb-4">
-            No existe una imagen, añade una
+          <img
+            v-if="hasImage(index)"
+            :src="images[index]?.src"
+            class="w-full h-full object-cover"
+          />
+          <p v-else class="text-xs text-gray-500 px-2">
+            No hay una imagen disponible.<br />
+            Por favor carga una.
           </p>
+        </div>
+
+        <p class="text-sm font-medium text-gray-700 min-h-[1.5rem]">
+          {{ getDisplayName(images[index], index) }}
+        </p>
+
+        <div class="flex gap-2">
           <BaseButton
-            text="Añadir imagen"
-            customClass="bg-[#1226AB] px-4 py-2"
-            @click="openAddModal(index)"
+            text="Cambiar"
+            customClass="bg-[#1226AB] px-3 py-1.5 text-xs"
+            @click="openEditModal(index)"
+          />
+          <BaseButton
+            v-if="hasImage(index)"
+            text="Eliminar"
+            customClass="bg-red-600 px-3 py-1.5 text-xs"
+            @click="askDelete(index)"
           />
         </div>
       </div>
     </div>
 
+    <!-- === GRID (SLOTS DINÁMICOS) === -->
     <div
-      v-else-if="images.length"
-      class="grid grid-cols-1 md:grid-cols-2 gap-5"
+      v-else-if="!isList && keepSlots"
+      class="grid grid-cols-2 md:grid-cols-4 gap-4"
     >
+      <div
+        v-for="(_, index) in maxImages"
+        :key="index"
+        class="bg-gray-50 rounded-xl p-4 flex flex-col gap-3 items-center text-center"
+      >
+        <div
+          class="w-full aspect-[4/3] rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center cursor-pointer"
+          @click="images[index] && openPreview(images[index]!)"
+        >
+          <img
+            v-if="images[index]"
+            :src="images[index].src"
+            class="w-full h-full object-cover"
+          />
+          <p v-else class="text-xs text-gray-500 px-2">
+            No hay una imagen disponible.<br />
+            Por favor carga una.
+          </p>
+        </div>
+
+        <p class="text-sm font-medium text-gray-700 min-h-[1.5rem]">
+          {{ images[index]?.name ?? getSlotLabel(index) }}
+        </p>
+
+        <div class="flex gap-2">
+          <BaseButton
+            text="Cambiar"
+            customClass="bg-[#1226AB] px-3 py-1.5 text-xs"
+            @click="openEditModal(index)"
+          />
+          <BaseButton
+            v-if="images[index]"
+            text="Eliminar"
+            customClass="bg-red-600 px-3 py-1.5 text-xs"
+            @click="askDelete(index)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- ==== LISTA (COMPORTAMIENTO POR DEFECTO) === -->
+    <div v-else class="flex flex-col divide-y divide-gray-200">
       <div
         v-for="(image, index) in images"
         :key="index"
-        class="flex flex-col gap-4 border-gray-200 rounded-xl p-4"
+        class="flex items-center gap-4 py-3"
       >
-        <!-- Imagen + botones -->
-        <div class="flex flex-col md:flex-row md:items-center gap-4">
-          <img
-            :src="image.src"
-            alt="imagen"
-            class="w-full md:w-64 min-h-[10rem] h-40 md:h-48 object-cover rounded-lg bg-gray-100 cursor-pointer"
-            @click="openImageModal(image)"
-          />
-
-          <div class="flex gap-4 justify-center md:justify-start">
-            <BaseButton
-              text="Cambiar Imagen"
-              customClass="bg-[#1226AB] px-4 py-2"
-              @click="openEditModal(index)"
-            />
-            <BaseButton
-              text="Eliminar"
-              customClass="bg-red-600 px-4 py-2"
-              @click="removeImage(index)"
-            />
-          </div>
+        <div
+          class="w-40 h-24 rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
+          @click="openPreview(image)"
+        >
+          <img :src="image.src" class="w-full h-full object-cover" />
         </div>
 
-        <!-- Nombre -->
-        <p class="text-gray-800 font-semibold">
+        <p class="flex-1 text-sm font-medium text-gray-800">
           {{ image.name }}
         </p>
+
+        <div class="flex gap-2">
+          <BaseButton
+            text="Cambiar"
+            customClass="bg-[#1226AB] px-3 py-1.5 text-sm"
+            @click="openEditModal(index)"
+          />
+          <BaseButton
+            text="Eliminar"
+            customClass="bg-red-600 px-3 py-1.5 text-sm"
+            @click="askDelete(index)"
+          />
+        </div>
       </div>
+
+      <p v-if="!images.length" class="text-center text-gray-500 py-6 text-sm">
+        No hay imágenes disponibles.
+      </p>
     </div>
 
-    <p v-else class="text-gray-500 text-center mt-6">No hay imágenes</p>
-
-    <!-- Modal Global -->
+    <!-- MODAL UPLOAD -->
     <BaseModal
-      :show="isModalOpen"
-      title="Subir imagen"
+      :show="isUploadModalOpen"
+      :title="editingIndex !== null ? 'Cambiar imagen' : 'Subir imagen'"
       :mode="editingIndex !== null ? 'edit' : 'create'"
-      @close="isModalOpen = false"
+      size="md"
+      @close="isUploadModalOpen = false"
       @confirm="handleConfirm"
     >
       <div
-        class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#1226AB] transition"
-        @dragover.prevent
-        @drop="onDrop"
+        class="rounded-xl p-6 bg-gray-50 text-center cursor-pointer border-dashed border-2 border-gray-300 hover:border-[#1226AB] transition"
         @click="fileInput?.click()"
       >
         <input
@@ -269,6 +381,12 @@ const isWide = computed(() => {
           @change="onFileChange"
         />
 
+        <img
+          v-if="previewUrl"
+          :src="previewUrl"
+          class="w-full h-48 object-cover rounded-lg"
+        />
+
         <div v-if="!previewUrl" class="flex flex-col items-center gap-2">
           <p class="text-gray-600 font-medium">
             Arrastra una imagen aquí o haz clic para seleccionar
@@ -277,51 +395,60 @@ const isWide = computed(() => {
             Formatos permitidos: JPG, PNG, WEBP
           </p>
         </div>
+      </div>
 
-        <div v-else class="flex flex-col gap-4">
+      <!-- Muestra el nombre del slot cuando está editando -->
+      <div
+        v-if="editingIndex !== null && slotLabels?.[editingIndex]"
+        class="mt-4 text-center"
+      >
+        <p class="text-sm text-gray-600">
+          Slot:
+          <span class="font-semibold">{{ slotLabels[editingIndex] }}</span>
+        </p>
+      </div>
+    </BaseModal>
+
+    <!-- MODAL PREVIEW -->
+    <BaseModal
+      :show="isPreviewModalOpen"
+      title="Vista Previa de la Imagen"
+      mode="view"
+      size="2xl"
+      @close="isPreviewModalOpen = false"
+      @confirm="isPreviewModalOpen = false"
+    >
+      <div class="flex flex-col items-center justify-center w-full h-full">
+        <div
+          v-if="previewImage"
+          class="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg p-2"
+        >
           <img
-            :src="previewUrl"
-            alt="preview"
-            class="w-full h-48 object-cover rounded-lg"
+            :src="previewImage.src"
+            :alt="previewImage.name"
+            class="max-w-full max-h-[70vh] object-contain"
+            style="max-height: 70vh"
           />
-          <p class="text-sm font-semibold text-gray-700">
-            {{ selectedFile?.name }}
+        </div>
+
+        <!-- Información de la imagen -->
+        <div
+          v-if="previewImage"
+          class="mt-4 text-center w-full bg-gray-50 p-3 rounded-lg"
+        >
+          <p class="font-medium text-gray-800">{{ previewImage.name }}</p>
+          <p class="text-sm text-gray-600 mt-1">
+            Haz clic fuera de la imagen o presiona "Aceptar" para salir
           </p>
         </div>
       </div>
     </BaseModal>
-  </div>
 
-  <!-- Modal de imagen expandida -->
-  <div
-    v-if="isImageModalOpen"
-    class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-    @click="closeImageModal"
-  >
-    <div class="relative max-w-4xl max-h-full p-4" @click.stop>
-      <img
-        :src="selectedImage?.src"
-        alt="expanded"
-        class="max-w-full max-h-full object-contain rounded-lg"
-      />
-      <button
-        @click="closeImageModal"
-        class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          ></path>
-        </svg>
-      </button>
-    </div>
-  </div>
+    <ConfirmDelete
+      :show="isDeleteModalOpen"
+      elementName="esta imagen"
+      @close="isDeleteModalOpen = false"
+      @confirm="confirmDelete"
+    />
+  </section>
 </template>
