@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import BaseButton from "@/components/elements/BaseButton.vue";
 import BaseModal from "@/components/elements/BaseModal.vue";
+import ConfirmDelete from "@/components/elements/ConfirmDeleteModal.vue";
 
 export interface Activity {
   id: string;
@@ -20,8 +21,12 @@ const emit = defineEmits<{
 
 /* ---------------- Estado ---------------- */
 const showModal = ref(false);
+const isPreviewModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
 const mode = ref<"create" | "edit">("create");
 const editingIndex = ref<number | null>(null);
+const previewImage = ref<string | null>(null);
+const pendingDeleteIndex = ref<number | null>(null);
 
 /* ---------------- Form ---------------- */
 const form = ref<Activity>({
@@ -63,10 +68,25 @@ const openEdit = (activity: Activity, index: number) => {
   showModal.value = true;
 };
 
-const removeActivity = (index: number) => {
+const openPreview = (imageSrc: string) => {
+  previewImage.value = imageSrc;
+  isPreviewModalOpen.value = true;
+};
+
+const askDelete = (index: number) => {
+  pendingDeleteIndex.value = index;
+  isDeleteModalOpen.value = true;
+};
+
+const removeActivity = () => {
+  if (pendingDeleteIndex.value === null) return;
+
   const updated = [...props.activities];
-  updated.splice(index, 1);
+  updated.splice(pendingDeleteIndex.value, 1);
   emit("update:activities", updated);
+
+  pendingDeleteIndex.value = null;
+  isDeleteModalOpen.value = false;
 };
 
 /* ---------------- Imagen ---------------- */
@@ -109,15 +129,16 @@ const handleConfirm = () => {
 
   emit("update:activities", updated);
   showModal.value = false;
+  resetForm();
 };
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6 bg-white p-6 rounded-lg shadow">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between ">
       <div>
-        <p class="text-gray-500 text-sm">
+        <p class="text-gray-500 text-sm font-medium">
           Gestiona las actividades de la especialidad
         </p>
       </div>
@@ -129,47 +150,57 @@ const handleConfirm = () => {
       />
     </div>
 
-    <!-- Lista -->
-    <div v-if="props.activities.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- LISTA DE ACTIVIDADES -->
+    <div class="flex flex-col divide-y divide-gray-200">
       <div
         v-for="(activity, index) in props.activities"
         :key="activity.id"
-        class="bg-white rounded-xl shadow p-4 flex flex-col gap-4"
+        class="flex items-center gap-4 py-3"
       >
-        <img
-          :src="activity.image"
-          class="w-full h-80 object-cover rounded-lg"
-        />
+        <!-- Miniatura de la imagen -->
+        <div
+          class="w-40 h-24 rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
+          @click="openPreview(activity.image)"
+        >
+          <img 
+            :src="activity.image" 
+            class="w-full h-full object-cover" 
+            :alt="activity.title"
+          />
+        </div>
 
-        <div>
-          <h3 class="font-semibold text-lg">
+        <!-- Información de la actividad -->
+        <div class="flex-1 flex flex-col gap-1">
+          <h3 class="text-sm font-semibold text-gray-900">
             {{ activity.title }}
           </h3>
-          <p class="text-gray-600 text-sm">
+          <p class="text-sm text-gray-600 line-clamp-2">
             {{ activity.description }}
           </p>
         </div>
 
-        <div class="flex gap-3 mt-auto">
+        <!-- Botones de acción -->
+        <div class="flex gap-2">
           <BaseButton
             text="Editar"
-            customClass="bg-[#1226AB] px-3 py-2"
+            customClass="bg-[#1226AB] px-3 py-1.5 text-sm"
             @click="openEdit(activity, index)"
           />
           <BaseButton
             text="Eliminar"
-            customClass="bg-red-600 px-3 py-2"
-            @click="removeActivity(index)"
+            customClass="bg-red-600 px-3 py-1.5 text-sm"
+            @click="askDelete(index)"
           />
         </div>
       </div>
+
+      <!-- Mensaje cuando no hay actividades -->
+      <p v-if="!props.activities.length" class="text-center text-gray-500 py-6 text-sm">
+        No hay actividades registradas
+      </p>
     </div>
 
-    <p v-else class="text-gray-500 text-sm">
-      No hay actividades registradas
-    </p>
-
-    <!-- Modal -->
+    <!-- MODAL PARA CREAR/EDITAR ACTIVIDAD -->
     <BaseModal
       :show="showModal"
       :title="mode === 'create' ? 'Nueva actividad' : 'Editar actividad'"
@@ -224,7 +255,8 @@ const handleConfirm = () => {
           <input
             v-model="form.title"
             type="text"
-            class="mt-1 w-full border rounded-md px-3 py-2"
+            class="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1226AB] focus:border-transparent"
+            placeholder="Ej: Taller de primeros auxilios"
           />
         </div>
 
@@ -234,10 +266,42 @@ const handleConfirm = () => {
           <textarea
             v-model="form.description"
             rows="3"
-            class="mt-1 w-full border rounded-md px-3 py-2"
+            class="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1226AB] focus:border-transparent"
+            placeholder="Describe brevemente la actividad..."
           />
         </div>
       </div>
     </BaseModal>
+
+    <!-- MODAL PREVIEW DE IMAGEN -->
+    <BaseModal
+      :show="isPreviewModalOpen"
+      title="Vista Previa de la Imagen"
+      mode="view"
+      size="2xl"
+      @close="isPreviewModalOpen = false"
+      @confirm="isPreviewModalOpen = false"
+    >
+      <div class="flex flex-col items-center justify-center w-full h-full">
+        <div
+          v-if="previewImage"
+          class="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg p-2"
+        >
+          <img
+            :src="previewImage"
+            class="max-w-full max-h-[70vh] object-contain"
+            style="max-height: 70vh"
+          />
+        </div>
+      </div>
+    </BaseModal>
+
+    <!-- MODAL CONFIRM DELETE -->
+    <ConfirmDelete
+      :show="isDeleteModalOpen"
+      elementName="esta actividad"
+      @close="isDeleteModalOpen = false"
+      @confirm="removeActivity"
+    />
   </div>
 </template>
