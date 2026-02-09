@@ -1,10 +1,8 @@
 <template>
   <Navbar>
-    <!-- BANNER CON CARRUSEL -->
     <section
       class="relative w-full min-h-[55vh] md:min-h-[75vh] flex items-center justify-center text-white overflow-hidden"
     >
-      <!-- Slides -->
       <div class="absolute inset-0 overflow-hidden">
         <div
           class="flex h-full transition-transform duration-700 ease-in-out"
@@ -22,15 +20,11 @@
             />
           </div>
         </div>
-
-        <!-- Overlays -->
         <div class="absolute inset-0 bg-black/60"></div>
         <div
           class="absolute inset-0 bg-gradient-to-br from-[#1436b0]/70 via-[#1436b0]/40 to-transparent"
         ></div>
       </div>
-
-      <!-- Contenido -->
       <div
         class="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-8 md:px-16 animate-fade-in-up"
       >
@@ -45,9 +39,10 @@
           Formación técnica y profesional de calidad en Cancún.
         </p>
       </div>
-
-      <!-- Indicadores -->
-      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      <div
+        v-if="bannerImages.length > 1"
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20"
+      >
         <button
           v-for="(_, i) in bannerImages"
           :key="i"
@@ -62,8 +57,7 @@
       </div>
     </section>
 
-    <!-- ESPECIALIDADES -->
-   <section class="py-20 bg-gradient-to-b from-white to-slate-50">
+    <section class="py-20 bg-gradient-to-b from-white to-slate-50">
       <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-3">
           Nuestra Oferta Educativa
@@ -73,10 +67,10 @@
         >
           Carreras Técnicas
         </p>
-      
+
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           <div
-            v-for="esp in especialidades"
+            v-for="esp in especialidadesDinamicas"
             :key="esp.id"
             @click="goToEspecialidad(esp.id)"
             class="relative group aspect-[5/7] rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-all"
@@ -85,13 +79,11 @@
               :src="esp.hero.imagen"
               class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <!-- Overlay de control -->
+
             <div class="absolute inset-0 bg-blue-700/20"></div>
-
-            <!-- Fondo para el logo -->
-            <div class="absolute top-2 left-2 w-12 h-12 md:w-20 md:h-20 bg-white/60 rounded-lg backdrop-blur-sm"></div>
-
-            <!-- Logo de la carrera -->
+            <div
+              class="absolute top-2 left-2 w-12 h-12 md:w-20 md:h-20 bg-white/60 rounded-lg backdrop-blur-sm"
+            ></div>
             <img
               :src="esp.hero.logo"
               class="absolute top-3 left-3 w-10 h-10 md:w-16 md:h-16 object-contain drop-shadow-lg z-10"
@@ -108,19 +100,16 @@
       </div>
     </section>
 
-    <!-- NUESTRA INSTITUCIÓN -->
     <section class="py-20 bg-white relative overflow-hidden">
       <div
         class="absolute inset-0 bg-gradient-to-br from-[#26E7C8]/10 via-transparent to-[#009BE5]/10"
       ></div>
-
-      <div class="relative max-w-7xl mx-auto px-6">
+      <div class="relative max-w-7xl mx-auto px-6 text-center md:text-left">
         <h2 class="text-center text-3xl md:text-5xl font-extrabold mb-16">
           Nuestra Institución
         </h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
-          <div class="animate-fade-in-up">
+          <div class="animate-fade-in-up text-left">
             <p
               class="text-sm font-semibold text-[#1436b0] uppercase tracking-widest mb-2"
             >
@@ -134,19 +123,28 @@
             >
               En CETMAR 41 Cancun formamos jóvenes preparados para transformar
               su futuro. Con educación técnica de calidad, práctica real y
-              docentes comprometidos con el desarrollo profesional.
+              docentes comprometidos.
             </p>
           </div>
 
-          <div class="rounded-2xl overflow-hidden shadow-xl animate-fade-in">
+          <div
+            class="rounded-2xl overflow-hidden shadow-xl animate-fade-in bg-slate-100 aspect-video flex items-center justify-center"
+          >
+            <video
+              v-if="institucionalVideo"
+              :src="institucionalVideo"
+              controls
+              class="w-full h-full object-cover"
+            ></video>
             <img
+              v-else
               src="/images/NuestraInstitucionHome.svg"
               class="w-full h-full object-cover"
+              alt="Default Institucion"
             />
           </div>
         </div>
 
-        <!-- CARACTERÍSTICAS -->
         <div
           class="mt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
         >
@@ -161,15 +159,12 @@
               <img :src="item.icon" class="w-8 h-8" />
             </div>
             <h4 class="text-xl font-bold mt-4">{{ item.titulo }}</h4>
-            <p class="text-sm text-slate-600 mt-2">
-              {{ item.descripcion }}
-            </p>
+            <p class="text-sm text-slate-600 mt-2">{{ item.descripcion }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GALERÍA -->
     <section class="py-20 bg-slate-50">
       <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-6">
@@ -178,20 +173,21 @@
         <p class="text-center text-slate-600 mb-12">
           Un vistazo a nuestras instalaciones.
         </p>
-
         <div class="relative overflow-hidden">
           <div
             class="flex transition-transform duration-700 ease-in-out"
-            :style="{ transform: `translateX(-${currentSlide * 33.33}%)` }"
+            :style="{
+              transform: `translateX(-${currentSlide * (100 / VISIBLE_IMAGES)}%)`,
+            }"
           >
             <div
               v-for="(img, index) in gallery"
               :key="index"
-              class="w-1/3 flex-shrink-0 px-3"
+              class="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-3"
             >
               <img
                 :src="img"
-                class="w-full h-56 sm:h-64 md:h-80 object-cover rounded-xl shadow-lg"
+                class="w-full h-64 md:h-80 object-cover rounded-xl shadow-lg border border-gray-100"
               />
             </div>
           </div>
@@ -204,64 +200,104 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useContentStore } from "@/store/content.store";
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
-import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
 import { especialidades } from "../especialidades.mock";
 import IconInstalaciones from "@/assets/icons/Instalaciones.svg";
 import IconDocentes from "@/assets/icons/Docentes.svg";
 import IconVinculacion from "@/assets/icons/Vinculacion.svg";
 
 const router = useRouter();
+const store = useContentStore();
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const goToEspecialidad = (id) => router.push(`/especialidad/${id}`);
 
-/* ================= BANNER ================= */
-const bannerImages = [
-  "/images/Home1.webp",
-  "/images/Home2.webp",
-  "/images/Home3.webp",
-];
+// --- CONTENIDO FILTRADO ---
+const homeContent = computed(() =>
+  store.contents.filter((c) => c.Page === "Inicio"),
+);
 
+// Banner
+const bannerImages = computed(() => {
+  const banners = homeContent.value.filter((c) => c.ComponentPage === "Banner");
+  return banners.length > 0
+    ? banners.map((c) => `${baseUrl}${c.UrlImage}`)
+    : ["/images/Home1.webp", "/images/Home2.webp", "/images/Home3.webp"];
+});
+
+// Galería
+const gallery = computed(() => {
+  const items = homeContent.value.filter((c) => c.ComponentPage === "Galeria");
+  return items.length > 0
+    ? items.map((c) => `${baseUrl}${c.UrlImage}`)
+    : ["/images/HomeImg1.svg", "/images/HomeImg2.svg", "/images/HomeImg3.svg"];
+});
+
+// Video Institucional
+const institucionalVideo = computed(() => {
+  const video = homeContent.value.find((c) => c.ComponentPage === "Video");
+  return video ? `${baseUrl}${video.UrlImage}` : null;
+});
+
+// Especialidades Dinámicas (Mapping por Título)
+const especialidadesDinamicas = computed(() => {
+  const portadasServer = homeContent.value.filter(
+    (c) => c.ComponentPage === "Especialidades",
+  );
+
+  return especialidades.map((esp) => {
+    // Buscamos si el servidor tiene una portada cuyo Titule coincida con el nombre de la carrera
+    const portadaEncontrada = portadasServer.find(
+      (p) => p.Titule === esp.hero.titulo,
+    );
+
+    if (portadaEncontrada) {
+      return {
+        ...esp,
+        hero: {
+          ...esp.hero,
+          imagen: `${baseUrl}${portadaEncontrada.UrlImage}`,
+        },
+      };
+    }
+    return esp; // Si no hay en el servidor, devolvemos el mock original
+  });
+});
+
+/* ================= LÓGICA BANNER ================= */
 const bannerIndex = ref(0);
 let bannerInterval;
-
 const nextBanner = () => {
-  bannerIndex.value = (bannerIndex.value + 1) % bannerImages.length;
+  if (bannerImages.value.length > 0)
+    bannerIndex.value = (bannerIndex.value + 1) % bannerImages.value.length;
 };
-
 const resetBannerTimer = () => {
   clearInterval(bannerInterval);
   bannerInterval = setInterval(nextBanner, 6000);
 };
-
 const goToBanner = (i) => {
   bannerIndex.value = i;
   resetBannerTimer();
 };
 
-/* ================= GALERÍA ================= */
-const gallery = [
-  "/images/HomeImg1.svg",
-  "/images/HomeImg2.svg",
-  "/images/HomeImg3.svg",
-  "/images/HomeImg1.svg",
-  "/images/HomeImg2.svg",
-  "/images/HomeImg3.svg",
-];
-
+/* ================= LÓGICA GALERÍA ================= */
 const VISIBLE_IMAGES = 3;
 const currentSlide = ref(0);
 let galleryInterval;
-
-const maxSlide = gallery.length - VISIBLE_IMAGES;
-
+const maxSlide = computed(() =>
+  Math.max(0, gallery.value.length - VISIBLE_IMAGES),
+);
 const nextSlide = () => {
   currentSlide.value =
-    currentSlide.value >= maxSlide ? 0 : currentSlide.value + 1;
+    currentSlide.value >= maxSlide.value ? 0 : currentSlide.value + 1;
 };
 
-onMounted(() => {
+onMounted(async () => {
+  if (store.contents.length === 0) await store.fetchContents();
   bannerInterval = setInterval(nextBanner, 6000);
   galleryInterval = setInterval(nextSlide, 5000);
 });
@@ -271,24 +307,20 @@ onUnmounted(() => {
   clearInterval(galleryInterval);
 });
 
-/* ================= DATA ================= */
 const caracteristicas = [
   {
     titulo: "Instalaciones de Vanguardia",
-    descripcion:
-      "Laboratorios y talleres equipados para una formación práctica y real.",
+    descripcion: "Laboratorios equipados.",
     icon: IconInstalaciones,
   },
   {
     titulo: "Docentes Comprometidos",
-    descripcion:
-      "Profesionales dedicados a guiar y potenciar el talento de los alumnos.",
+    descripcion: "Profesionales dedicados.",
     icon: IconDocentes,
   },
   {
     titulo: "Vinculación Estratégica",
-    descripcion:
-      "Conectamos a los estudiantes con el sector productivo para su éxito profesional.",
+    descripcion: "Éxito profesional.",
     icon: IconVinculacion,
   },
 ];
@@ -305,7 +337,6 @@ const caracteristicas = [
     transform: translateY(0);
   }
 }
-
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -316,11 +347,9 @@ const caracteristicas = [
     transform: translateY(0);
   }
 }
-
 .animate-fade-in {
   animation: fade-in 1s ease-out both;
 }
-
 .animate-fade-in-up {
   animation: fade-in-up 1s ease-out both;
 }
