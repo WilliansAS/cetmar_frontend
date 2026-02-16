@@ -1,164 +1,175 @@
 <template>
   <Navbar>
-   <!-- BANNER -->
-<section
-  class="relative w-full min-h-[55vh] md:min-h-[75vh] flex items-center text-white overflow-hidden"
->
-  <!-- Fondo -->
-  <div class="absolute inset-0">
-    <img
-      src="/images/Nosotros.webp"
-      alt="Estudiantes CETMAR"
-      class="w-full h-full object-cover object-center"
-    />
-
-    <div class="absolute inset-0 bg-black/60"></div>
-    <div class="absolute inset-0 bg-gradient-to-br from-[#3b6eff]/60 to-transparent"></div>
-
-  </div>
-
-  <!-- Contenido -->
-  <div
-    class="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 md:px-16 w-full flex justify-start"
-  >
-    <div
-      class="max-w-xl text-center md:text-left animate-fade-in-up"
+    <section
+      class="relative w-full min-h-[55vh] md:min-h-[75vh] flex items-center text-white overflow-hidden"
     >
-      <h1
-        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight drop-shadow-xl"
-      >
-        Construyendo tu futuro con <br />
-        <span class="text-yellow-300">educación de calidad</span>
-      </h1>
-
-      <p
-        class="text-base sm:text-lg md:text-xl text-white/95 max-w-md font-medium leading-relaxed"
-      >
-        En CETMAR 41 combinamos teoría y práctica para impulsar tu futuro
-        profesional y humano.
-      </p>
-
-      <!-- CTA -->
-      <div class="mt-8">
-        <a
-          href="#mision"
-          @click.prevent="scrollToMision"
-          class="inline-flex items-center gap-2 bg-white text-[#3b6eff] font-semibold py-3 px-7 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105"
-        >
-          Conoce más
-          <svg
-            class="w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M13 5l7 7-7 7M5 12h14" />
-          </svg>
-        </a>
+      <div class="absolute inset-0">
+        <img
+          :src="bannerImg"
+          alt="Estudiantes CETMAR"
+          class="w-full h-full object-cover object-center"
+        />
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-[#3b6eff]/60 to-transparent"
+        ></div>
       </div>
-    </div>
-  </div>
-</section>
 
-
-    <!-- INTRODUCCIÓN -->
-    <section class="py-16 md:py-20 px-6 md:px-20 text-center bg-white animate-fade-in-up">
-      <h2
-        class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 font-poppins"
+      <div
+        class="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 md:px-16 w-full flex justify-start"
       >
-        Formando jóvenes con
-        <span class="text-[#4880FF]">visión de futuro</span>
-      </h2>
-      <p
-        class="text-gray-600 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed font-montserrat"
-      >
-        En el CETMAR 41 creemos que la educación es la mejor herramienta para
-        transformar vidas. Cada especialidad, práctica y experiencia que
-        ofrecemos está diseñada para impulsar el desarrollo académico, técnico y
-        humano de nuestros estudiantes, preparándolos para enfrentar los retos
-        del futuro y construir un mundo mejor.
-      </p>
+        <div class="max-w-xl text-center md:text-left animate-fade-in-up">
+          <h1
+            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight drop-shadow-xl"
+          >
+            Construyendo tu futuro con <br />
+            <span class="text-yellow-300">educación de calidad</span>
+          </h1>
+          <p
+            class="text-base sm:text-lg md:text-xl text-white/95 max-w-md font-medium leading-relaxed"
+          >
+            En CETMAR 41 combinamos teoría y práctica para impulsar tu futuro
+            profesional y humano.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- IMAGEN INSTITUCIONAL (reemplaza video) -->
-    <section class="px-6 md:px-20 mb-20 flex justify-center animate-fade-in">
+    <section class="py-12 md:py-24 px-6 md:px-20 text-center bg-white relative">
+      <div class="relative z-10 animate-fade-in-up">
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 font-poppins"
+        >
+          Formando jóvenes con
+          <span class="text-[#4880FF]">visión de futuro</span>
+        </h2>
+        <p
+          class="text-gray-600 text-base sm:text-lg max-w-4xl mx-auto leading-relaxed font-montserrat"
+        >
+          En el CETMAR 41 creemos que la educación es la mejor herramienta para
+          transformar vidas. Cada especialidad, práctica y experiencia que
+          ofrecemos está diseñada para impulsar el desarrollo académico, técnico
+          y humano de nuestros estudiantes.
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-20 mb-24 flex justify-center animate-fade-in">
       <div
-        class="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-white"
+        class="w-full max-w-5xl rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-slate-100 bg-slate-100""
       >
-        <div class="aspect-video">
+        <div class="aspect-video relative">
           <img
-            src="/images/Placeholder.webp"
-            alt="Imagen institucional CETMAR"
-            class="w-full h-full object-cover object-center"
+            :src="descriptionImg"
+            alt="Imagen institucional"
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
       </div>
     </section>
 
-    <!-- MISIÓN -->
     <section
       id="mision"
-      class="py-16 md:py-20 px-6 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-white via-blue-50 to-gray-100 animate-fade-in-up"
+      class="py-20 px-6 md:px-20 bg-slate-50 border-y border-slate-100"
     >
-      <div>
-        <h3
-          class="text-xl md:text-2xl font-bold text-gray-900 mb-4 font-poppins border-l-4 border-[#4880FF] pl-3"
-        >
-          Misión
-        </h3>
-        <p
-          class="text-gray-700 leading-relaxed font-montserrat text-base md:text-lg bg-white/70 backdrop-blur-sm rounded-xl shadow p-5 md:p-6 hover:shadow-lg transition-all duration-500"
-        >
-          Ofrecer servicios de educación, capacitación y asistencia técnica en el tipo educativo 
-          medio superior que contribuyan al desarrollo permanente de los educandos que cursan el 
-          Bachillerato Tecnológico Agropecuario, Acuícola, Forestal y de Ciencias del Mar. <br/><br/>
-          A través de un modelo que promueva la formación integral, con valores y respeto a los derechos 
-          humanos, a la interculturalidad y a la diversidad, a partir del desarrollo del pensamiento
-          crítico, la capacidad de solucionar problemas y una formación profesional técnica que consolide 
-          sus conocimientos y aptitudes, cultura de emprendimiento y vinculación con el entorno regional. 
-          <br/><br/>
-          Para entregar a la sociedad personas con sentido de ciudadanía y liderazgo que coadyuven
-          al desarrollo de sus comunidades y promuevan el uso sustentable de los recursos naturales.
-        </p>
-      </div>
+      <div
+        class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-stretch"
+      >
+        <div class="flex flex-col justify-center animate-fade-in-up">
+          <div class="flex flex-col gap-2 mb-8">
+            <div class="flex items-center gap-4">
+              <span
+                class="flex items-center justify-center w-12 h-12 bg-[#4880FF] text-white rounded-xl text-xl font-bold shadow-lg"
+                >M</span
+              >
+              <h3 class="text-3xl font-bold text-gray-900 font-poppins">
+                Misión
+              </h3>
+            </div>
+            <div
+              class="w-full h-px bg-gradient-to-r from-[#4880FF] to-transparent mt-2"
+            ></div>
+          </div>
 
-      <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xl">
-        <img
-          src="/images/Mision.webp"
-          alt="Misión CETMAR"
-          class="w-full h-full object-cover object-center"
-        />
+          <div
+            class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 md:p-10 h-full flex items-center relative overflow-hidden"
+          >
+            <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#4880FF]"></div>
+            <p
+              class="text-gray-700 leading-relaxed font-montserrat text-base md:text-lg"
+            >
+              Ofrecer servicios de educación, capacitación y asistencia técnica
+              en el tipo educativo medio superior que contribuyan al desarrollo
+              permanente de los educandos que cursan el Bachillerato Tecnológico
+              Agropecuario, Acuícola, Forestal y de Ciencias del Mar.
+              <br /><br />
+              A través de un modelo que promueva la formación integral, con
+              valores y respeto a los derechos humanos, a la interculturalidad y
+              a la diversidad, a partir del desarrollo del pensamiento crítico y
+              una formación profesional técnica que consolide sus conocimientos.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="aspect-video md:aspect-auto w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 border-white animate-fade-in order-first md:order-last"
+        >
+          <img
+            :src="misionImg"
+            alt="Misión"
+            class="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </section>
 
-    <!-- VISIÓN -->
-    <section
-      class="py-16 md:py-20 px-6 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-gradient-to-tl from-gray-50 via-blue-50 to-white animate-fade-in"
-    >
-      <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xl md:order-1 order-2">
-        <img
-          src="/images/Vision.webp"
-          alt="Visión CETMAR"
-          class="w-full h-full object-cover object-center"
-        />
-      </div>
+    <section class="py-20 px-6 md:px-20 bg-white">
+      <div
+        class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-stretch"
+      >
+        <div
+          class="aspect-video md:aspect-auto w-full rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 border-white animate-fade-in"
+        >
+          <img
+            :src="visionImg"
+            alt="Visión"
+            class="w-full h-full object-cover"
+          />
+        </div>
 
-      <div class="md:order-2 order-1">
-        <h3
-          class="text-xl md:text-2xl font-bold text-gray-900 mb-4 font-poppins border-l-4 border-[#4880FF] pl-3"
-        >
-          Visión
-        </h3>
-        <p
-          class="text-gray-700 leading-relaxed font-montserrat text-base md:text-lg bg-white/70 backdrop-blur-sm rounded-xl shadow p-5 md:p-6 hover:shadow-lg transition-all duration-500"
-        >
-          Consolidarse como una institución educativa que ofrece una formación de calidad, 
-          pertinente, incluyente y de excelencia, que contribuye socialmente formando 
-          estudiantes con adaptabilidad al cambio. <br/><br/>
-          Así como a las personas del medio rural
-          y semiurbano que lo demandan, con un enfoque humanista, que atiende las necesidades 
-          del aprendizaje individual y colectivo, para fortalecer el desarrollo económico, 
-          social y cultural del país.
-        </p>
+        <div class="flex flex-col justify-center animate-fade-in-up">
+          <div class="flex flex-col gap-2 mb-8">
+            <div class="flex items-center gap-4">
+              <span
+                class="flex items-center justify-center w-12 h-12 bg-[#00A896] text-white rounded-xl text-xl font-bold shadow-lg"
+                >V</span
+              >
+              <h3 class="text-3xl font-bold text-gray-900 font-poppins">
+                Visión
+              </h3>
+            </div>
+            <div
+              class="w-full h-px bg-gradient-to-r from-[#00A896] to-transparent mt-2"
+            ></div>
+          </div>
+
+          <div
+            class="bg-slate-50 rounded-3xl shadow-xl border border-slate-200 p-8 md:p-10 h-full flex items-center relative overflow-hidden"
+          >
+            <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#00A896]"></div>
+            <p
+              class="text-gray-700 leading-relaxed font-montserrat text-base md:text-lg"
+            >
+              Consolidarse como una institución educativa que ofrece una
+              formación de calidad, pertinente, incluyente y de excelencia, que
+              contribuye socialmente formando estudiantes con adaptabilidad al
+              cambio. <br /><br />
+              Con un enfoque humanista, que atiende las necesidades del
+              aprendizaje individual y colectivo, para fortalecer el desarrollo
+              económico, social y cultural del país.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -167,13 +178,47 @@
 </template>
 
 <script setup>
+import { computed, onMounted } from "vue";
+import { useContentStore } from "@/store/content.store";
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
 
-function scrollToMision() {
-  const section = document.getElementById("mision");
-  section?.scrollIntoView({ behavior: "smooth" });
-}
+const store = useContentStore();
+const baseUrl = import.meta.env.VITE_API_URL;
+
+const aboutContent = computed(() =>
+  store.contents.filter((c) => c.Page === "Nosotros"),
+);
+
+const bannerImg = computed(() => {
+  const data = aboutContent.value.find((c) => c.ComponentPage === "Banner");
+  return data ? `${baseUrl}${data.UrlImage}` : "/images/Nosotros.webp";
+});
+
+const descriptionImg = computed(() => {
+  const data = aboutContent.value.find(
+    (c) => c.ComponentPage === "Imagen Descripción",
+  );
+  return data ? `${baseUrl}${data.UrlImage}` : "/images/Placeholder.webp";
+});
+
+const misionImg = computed(() => {
+  const data = aboutContent.value.find(
+    (c) => c.ComponentPage === "Imagen Misión",
+  );
+  return data ? `${baseUrl}${data.UrlImage}` : "/images/Mision.webp";
+});
+
+const visionImg = computed(() => {
+  const data = aboutContent.value.find(
+    (c) => c.ComponentPage === "Imagen Visión",
+  );
+  return data ? `${baseUrl}${data.UrlImage}` : "/images/Vision.webp";
+});
+
+onMounted(async () => {
+  if (store.contents.length === 0) await store.fetchContents();
+});
 </script>
 
 <style scoped>
@@ -182,12 +227,10 @@ function scrollToMision() {
 .font-poppins {
   font-family: "Poppins", sans-serif;
 }
-
 .font-montserrat {
   font-family: "Montserrat", sans-serif;
 }
 
-/* Animaciones */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -198,7 +241,6 @@ function scrollToMision() {
     transform: translateY(0);
   }
 }
-
 .animate-fade-in {
   animation: fade-in 0.9s ease-out both;
 }
@@ -213,7 +255,6 @@ function scrollToMision() {
     transform: translateY(0);
   }
 }
-
 .animate-fade-in-up {
   animation: fade-in-up 1s ease-out both;
 }

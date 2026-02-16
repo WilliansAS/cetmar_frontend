@@ -1,47 +1,60 @@
 <template>
   <Navbar>
-    <!-- BANNER -->
     <section
       class="relative w-full min-h-[55vh] md:min-h-[75vh] flex items-center justify-center text-white overflow-hidden"
     >
       <div class="absolute inset-0">
         <img
-          src="/images/CulturalesDeportivas.webp"
+          :src="bannerImage"
           alt="Banner calendario académico"
           class="w-full h-full object-cover object-center"
         />
         <div class="absolute inset-0 bg-black/60"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-[#3b6eff]/60 to-transparent"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-[#3b6eff]/60 to-transparent"
+        ></div>
       </div>
 
-      <div class="relative z-10 text-center max-w-3xl mx-auto px-4 md:px-16 animate-fade-in-up">
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold font-poppins mb-4 leading-tight">
+      <div
+        class="relative z-10 text-center max-w-3xl mx-auto px-4 md:px-16 animate-fade-in-up"
+      >
+        <h1
+          class="text-3xl md:text-5xl lg:text-6xl font-extrabold font-poppins mb-4 leading-tight"
+        >
           Calendario Académico y Avisos
         </h1>
-        <p class="text-base md:text-xl font-montserrat text-white/95 leading-relaxed">
-          Consulta las fechas más importantes del ciclo escolar y mantente al día con los comunicados oficiales de CETMAR 41.
+        <p
+          class="text-base md:text-xl font-montserrat text-white/95 leading-relaxed"
+        >
+          Consulta las fechas más importantes del ciclo escolar y mantente al
+          día con los comunicados oficiales de CETMAR 41.
         </p>
       </div>
     </section>
 
-    <!-- CICLO -->
-    <div class="w-full bg-gradient-to-r from-[#1226AB] to-[#00A896] py-3 px-6 md:px-10">
+    <div
+      class="w-full bg-gradient-to-r from-[#1226AB] to-[#00A896] py-3 px-6 md:px-10"
+    >
       <span class="text-white font-bold text-base md:text-xl font-montserrat">
         Ciclo Escolar 2025 - 2026
       </span>
     </div>
 
-    <!-- COMUNICADOS -->
-    <section class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 py-16 px-4 md:px-20">
+    <section
+      class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 py-16 px-4 md:px-20"
+    >
       <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-12">
+        <div class="text-center mb-8">
           <h2
             class="text-2xl md:text-4xl font-bold text-gray-900 font-poppins border-l-4 border-[#4880FF] pl-4 inline-block"
           >
             Comunicados Recientes
           </h2>
-          <p class="text-gray-600 mt-4 text-sm md:text-lg font-montserrat max-w-3xl mx-auto">
-            Mantente informado sobre las últimas noticias y comunicados oficiales de CETMAR 41
+          <p
+            class="text-gray-600 mt-4 text-sm md:text-lg font-montserrat max-w-3xl mx-auto"
+          >
+            Mantente informado sobre las últimas noticias y comunicados
+            oficiales de CETMAR 41
           </p>
         </div>
 
@@ -52,17 +65,18 @@
 
         <div class="text-center mt-10">
           <button
-            @click="$refs.announcementComponent.toggleShowAll()"
-            class="bg-gradient-to-r from-[#4880FF] to-[#00A896] text-white font-semibold py-3 px-6 md:px-8 rounded-full hover:shadow-lg hover:scale-105 transition-all flex items-center mx-auto text-sm md:text-base"
+            @click="announcementComponent?.toggleShowAll()"
+            class="bg-gradient-to-r from-[#4880FF] to-[#00A896] text-white font-semibold py-3 px-6 md:px-8 rounded-full hover:shadow-lg hover:scale-105 transition-all flex items-center mx-auto text-sm md:text-base cursor-pointer"
           >
-            {{ showAllState ? 'Ver menos avisos' : 'Cargar más avisos' }}
+            {{ showAllState ? "Ver menos avisos" : "Cargar más avisos" }}
           </button>
         </div>
       </div>
     </section>
 
-    <!-- CALENDARIOS -->
-    <section class="py-16 px-4 md:px-20 bg-gradient-to-br from-white via-blue-50/20 to-gray-50">
+    <section
+      class="py-16 px-4 md:px-20 bg-gradient-to-br from-white via-blue-50/20 to-gray-50"
+    >
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-14">
           <h3
@@ -70,44 +84,51 @@
           >
             Calendarios de Actividades
           </h3>
-          <p class="text-gray-600 mt-4 text-sm md:text-lg font-montserrat max-w-3xl mx-auto">
+          <p
+            class="text-gray-600 mt-4 text-sm md:text-lg font-montserrat max-w-3xl mx-auto"
+          >
             Consulta los calendarios oficiales del ciclo escolar
           </p>
         </div>
 
         <div class="flex flex-col gap-16">
-          <!-- CALENDARIO GENERAL -->
           <div class="calendar-card">
             <div class="calendar-header from-[#1226AB] to-[#00A896]">
-              <h4 class="text-lg md:text-xl font-bold mb-1 text-indigo-950">Calendario Académico General</h4>
-              <p class="text-sm md:text-base opacity-90 text-indigo-950">Ciclo Escolar 2025-2026</p>
+              <h4 class="text-lg md:text-xl font-bold mb-1">
+                Calendario Académico General
+              </h4>
+              <p class="text-sm md:text-base opacity-90">
+                Ciclo Escolar 2025-2026
+              </p>
             </div>
             <img
-              src="/images/Calendario2025-2026.webp"
+              :src="academicImg"
               alt="Calendario académico general"
               class="calendar-image"
-              @click="openModal('/images/Calendario2025-2026.webp', 'Calendario académico general')"
+              @click="openModal(academicImg, 'Calendario académico general')"
             />
           </div>
 
-          <!-- CALENDARIO AMBIENTAL -->
           <div class="calendar-card">
             <div class="calendar-header from-[#00A896] to-[#2EC4B6]">
-              <h4 class="text-lg md:text-xl font-bold mb-1 text-indigo-950">Calendario Ambiental</h4>
-              <p class="text-sm md:text-base opacity-90 text-indigo-950">Actividades Ambientales y de Sostenibilidad</p>
+              <h4 class="text-lg md:text-xl font-bold mb-1">
+                Calendario Ambiental
+              </h4>
+              <p class="text-sm md:text-base opacity-90">
+                Actividades Ambientales y de Sostenibilidad
+              </p>
             </div>
             <img
-              src="/images/calendario_ambiental.webp"
+              :src="environmentalImg"
               alt="Calendario ambiental"
               class="calendar-image"
-              @click="openModal('/images/calendario_ambiental.webp', 'Calendario ambiental')"
+              @click="openModal(environmentalImg, 'Calendario ambiental')"
             />
           </div>
         </div>
       </div>
     </section>
 
-    <!-- MODAL -->
     <transition name="fade">
       <div
         v-if="showModal"
@@ -118,11 +139,10 @@
           <div class="relative max-w-6xl w-full max-h-[90vh]">
             <button
               @click="closeModal"
-              class="absolute -top-10 right-0 text-white text-3xl hover:scale-110 transition"
+              class="absolute -top-10 right-0 text-white text-4xl hover:scale-110 transition cursor-pointer"
             >
               ✕
             </button>
-
             <img
               :src="modalImage"
               :alt="modalAlt"
@@ -138,13 +158,53 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useContentStore } from "@/store/content.store";
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
 import Announcement from "@/modules/public/components/Announcement.vue";
 
-const showAllState = ref(false);
+const store = useContentStore();
+const baseUrl = import.meta.env.VITE_API_URL;
 
+/* --- FILTRADO DE CONTENIDO DINÁMICO --- */
+const calendarContent = computed(() =>
+  store.contents.filter((c) => c.Page === "Calendario"),
+);
+
+// Banner
+const bannerImage = computed(() => {
+  const data = calendarContent.value.find(
+    (c) => c.ComponentPage === "Banner Calendario",
+  );
+  return data
+    ? `${baseUrl}${data.UrlImage}`
+    : "/images/CulturalesDeportivas.webp";
+});
+
+// Académico
+const academicImg = computed(() => {
+  const data = calendarContent.value.find(
+    (c) => c.ComponentPage === "Calendario Académico",
+  );
+  return data
+    ? `${baseUrl}${data.UrlImage}`
+    : "/images/Calendario2025-2026.webp";
+});
+
+// Ambiental
+const environmentalImg = computed(() => {
+  const data = calendarContent.value.find(
+    (c) => c.ComponentPage === "Calendario Ambiental",
+  );
+  return data
+    ? `${baseUrl}${data.UrlImage}`
+    : "/images/calendario_ambiental.webp";
+});
+
+/* --- LÓGICA DE UI --- */
+const announcementComponent = ref(null);
+const showAllState = ref(false);
 const showModal = ref(false);
 const modalImage = ref("");
 const modalAlt = ref("");
@@ -162,6 +222,13 @@ const closeModal = () => {
 const handleToggleState = (state) => {
   showAllState.value = state;
 };
+
+onMounted(async () => {
+  // Disparar carga de contenido si no está en LocalStorage/Store
+  if (store.contents.length === 0) {
+    await store.fetchContents();
+  }
+});
 </script>
 
 <style scoped>
@@ -174,7 +241,6 @@ const handleToggleState = (state) => {
   font-family: "Montserrat", sans-serif;
 }
 
-/* CALENDAR CARDS */
 .calendar-card {
   background: white;
   border-radius: 1rem;
@@ -183,28 +249,25 @@ const handleToggleState = (state) => {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   transition: box-shadow 0.4s ease;
 }
-.calendar-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
 
 .calendar-header {
-  padding: 1rem;
+  padding: 1.25rem;
   text-align: center;
-  color: white;
-  font-weight: 700;
-  font-family: "Poppins", sans-serif;
+  color: #0c0a09; /* Ajustado para legibilidad sobre el gradiente */
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
 .calendar-image {
   width: 100%;
-  max-height: 750px;
+  max-height: 850px;
   object-fit: contain;
   cursor: zoom-in;
   transition: transform 0.4s ease;
+  background-color: #f8fafc;
 }
+
 .calendar-image:hover {
-  transform: scale(1.01);
+  transform: scale(1.005);
 }
 
 @keyframes fade-in-up {
@@ -221,7 +284,6 @@ const handleToggleState = (state) => {
   animation: fade-in-up 0.9s ease-out both;
 }
 
-/* TRANSITIONS */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.35s ease;
@@ -230,9 +292,10 @@ const handleToggleState = (state) => {
 .fade-leave-to {
   opacity: 0;
 }
-
 .zoom-enter-active {
-  transition: transform 0.35s ease, opacity 0.35s ease;
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
 }
 .zoom-enter-from {
   transform: scale(0.95);
