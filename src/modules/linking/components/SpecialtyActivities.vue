@@ -9,6 +9,7 @@ export interface Activity {
   title: string;
   description: string;
   image: string;
+  file?: File;
 }
 
 const props = defineProps<{
@@ -117,14 +118,18 @@ const handleConfirm = () => {
   if (!form.value.title || !form.value.description || !form.value.image) return;
 
   const updated = [...props.activities];
+  const newActivity = {
+    ...form.value,
+    file: selectedFile.value || undefined,
+  };
 
   if (mode.value === "create") {
     updated.push({
-      ...form.value,
-      id: crypto.randomUUID(),
+      ...newActivity,
+      id: crypto.randomUUID(), // Temp ID
     });
   } else if (mode.value === "edit" && editingIndex.value !== null) {
-    updated[editingIndex.value] = { ...form.value };
+    updated[editingIndex.value] = { ...newActivity };
   }
 
   emit("update:activities", updated);

@@ -80,7 +80,7 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 import HeroEspecialidad from '../components/HeroEspecialidad.vue';
 import IntroEspecialidad from '../components/IntroEspecialidad.vue';
 import CardsActividades from '../components/CardsActividades.vue';
@@ -88,10 +88,58 @@ import Navbar from '@/components/layouts/Navbar.vue';
 import Footer from '@/components/layouts/Footer.vue';
 import { especialidades } from '../especialidades.mock';
 import { useRoute } from 'vue-router';
+import { useContentStore } from "@/store/content.store";
 
 const route = useRoute();
+const contentStore = useContentStore();
 const especialidadId = route.params.id as string;
 
-// Simular selección dinámica (puedes cambiar el id para probar)
-const especialidad = ref(especialidades.find(e => e.id === especialidadId));
+// Mapeo inverso de ID ruta -> Nombre Pagina Backend
+const slugToPageName: Record<string, string> = {
+  "vida-saludable": "VidaSaludable",
+  hospedaje: "ServiciosHospedaje",
+  ambiental: "LaboratorioAmbiental",
+  sig: "SistemasOrgGeografica",
+};
+const pageName = slugToPageName[especialidadId] || especialidadId;
+
+// Estado base del mock obligatoriamente para colores y estructura fija
+const especialidadBase = especialidades.find(e => e.id === especialidadId);
+const especialidad = ref(especialidadBase ? { ...especialidadBase } : null);
+
+// Cargar datos dinámicos
+watchEffect(async () => {
+    if (!especialidad.value) return;
+
+    try {
+        // 1. Cargar Banner
+        const contents = await contentStore.fetchContentByPage(pageName);
+        const bannerContent = contents.find(c => c.ComponentPage === "BannerPrincipal");
+        
+        if (bannerContent && bannerContent.UrlImage) {
+            especialidad.value.hero.banner = bannerContent.UrlImage;
+        }
+
+        // 2. Cargar Actividades
+        // Nota: Asumimos que fetchGeneralContents trae todo y filtramos por Type/Page
+        // Idealmente el backend ofrecería /contents?type=VidaSaludable
+        await contentStore.fetchGeneralContents();
+        const target = pageName.toLowerCase();
+        
+        const dynamicActivities = contentStore.generalContents
+            .filter(c => (c.Type && c.Type.toLowerCase() === target) || (c.Page && c.Page.toLowerCase() === target))
+            .map(c => ({
+                titulo: c.Titule,
+                descripcion: c.Description,
+                imagen: c.UrlImage || '/images/placeholder.jpg'
+            }));
+            
+        if (dynamicActivities.length > 0) {
+            especialidad.value.actividades = dynamicActivities;
+        }
+        
+    } catch (e) {
+        console.error("Error loading dynamic content for specialty", e);
+    }
+});
 </script>

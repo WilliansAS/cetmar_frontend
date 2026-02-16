@@ -22,7 +22,7 @@
               <div
                 class="flex items-center rounded-md transition-colors relative"
                 :class="[
-                  route.path === item.route
+                  item.route && route.path === item.route
                     ? 'bg-[#4880FF] text-white shadow-lg'
                     : isParentActive(item)
                     ? 'bg-blue-50'
@@ -30,8 +30,10 @@
                   { 'justify-center': isCollapsed },
                 ]"
               >
+                <!-- Si tiene ruta, es un enlace -->
                 <router-link
-                  :to="item.route!"
+                  v-if="item.route"
+                  :to="item.route"
                   custom
                   v-slot="{ href, navigate }"
                 >
@@ -47,6 +49,7 @@
                     }"
                   >
                     <img
+                      v-if="item.iconSrc"
                       :src="item.iconSrc"
                       alt=""
                       class="w-5 h-5"
@@ -57,6 +60,27 @@
                     }}</span>
                   </a>
                 </router-link>
+
+                <!-- Si NO tiene ruta, es solo un texto clickeable para desplegar -->
+                <div
+                  v-else
+                  @click="toggleDropdown(item.label)"
+                  class="flex items-center p-3 text-[#202224] font-semibold cursor-pointer flex-grow"
+                  :class="{
+                    'text-[#4880FF]': isParentActive(item)
+                  }"
+                >
+                   <img
+                      v-if="item.iconSrc"
+                      :src="item.iconSrc"
+                      alt=""
+                      class="w-5 h-5"
+                      :class="isParentActive(item) ? '' : 'filter-black'"
+                    />
+                    <span v-if="!isCollapsed" class="ml-3">{{
+                      item.label
+                    }}</span>
+                </div>
 
                 <button
                   v-if="!isCollapsed"
@@ -70,7 +94,7 @@
                     class="w-3 h-3 transition-transform"
                     :class="[
                       { 'rotate-180': openDropdowns[item.label] },
-                      route.path === item.route ? 'filter-white' : 'filter-black',
+                      item.route && route.path === item.route ? 'filter-white' : 'filter-black',
                     ]"
                   />
                 </button>
@@ -203,10 +227,13 @@ const toggleDropdown = (label: string) => {
 };
 
 const isParentActive = (parentItem: NavItem) => {
-  if (!parentItem.children || !parentItem.route) return false;
-  return (
-    route.path.startsWith(parentItem.route) && route.path !== parentItem.route
-  );
+  if (!parentItem.children) return false;
+  // Si tiene ruta padre, verificar
+  if (parentItem.route && route.path.startsWith(parentItem.route) && route.path !== parentItem.route) {
+    return true;
+  }
+  // Verificar si alguno de los hijos está activo
+  return parentItem.children.some(child => child.route && route.path.startsWith(child.route));
 };
 </script>
 

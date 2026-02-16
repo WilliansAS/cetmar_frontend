@@ -6,8 +6,10 @@ import ConfirmDelete from "@/components/elements/ConfirmDeleteModal.vue";
 import ImagesIcon from "@/assets/icons/Image.svg";
 
 export interface ImageItem {
+  id?: number | string;
   src: string;
   name: string;
+  file?: File;
 }
 
 const props = defineProps<{
@@ -139,8 +141,10 @@ const handleConfirm = () => {
   if (!previewUrl.value) return;
 
   const image: ImageItem = {
+    id: editingIndex.value !== null && props.images[editingIndex.value]?.id ? props.images[editingIndex.value].id : undefined,
     src: previewUrl.value,
     name: selectedFile.value?.name || getSlotLabel(editingIndex.value || 0),
+    file: selectedFile.value || undefined,
   };
 
   const updated = [...props.images];
