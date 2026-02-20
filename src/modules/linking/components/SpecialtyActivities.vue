@@ -16,7 +16,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:activities", value: Activity[]): void;
+  (e: "add", data: { title: string, description: string, file: File | null }): void;
+  (e: "edit", id: number, data: { title: string, description: string, file: File | null }): void;
+  (e: "delete", id: number): void;
 }>();
 
 /* ---------------- Estado ---------------- */
@@ -79,13 +81,8 @@ const askDelete = (index: number) => {
 };
 
 const removeActivity = () => {
-  if (pendingDeleteIndex.value === null) return;
-
-  const updated = [...props.activities];
-  updated.splice(pendingDeleteIndex.value, 1);
-  emit("update:activities", updated);
-
-  pendingDeleteIndex.value = null;
+  const idToDelete = props.activities[pendingDeleteIndex.value].id;
+  emit("delete", Number(idToDelete));
   isDeleteModalOpen.value = false;
 };
 
@@ -114,20 +111,22 @@ const onDrop = (event: DragEvent) => {
 
 /* ---------------- Guardar ---------------- */
 const handleConfirm = () => {
-  if (!form.value.title || !form.value.description || !form.value.image) return;
-
-  const updated = [...props.activities];
+  if (!form.value.title || !form.value.description) return;
 
   if (mode.value === "create") {
-    updated.push({
-      ...form.value,
-      id: crypto.randomUUID(),
+    // Mandamos los datos y el archivo seleccionado (selectedFile) al padre
+    emit("add", {
+      title: form.value.title,
+      description: form.value.description,
+      file: selectedFile.value
     });
   } else if (mode.value === "edit" && editingIndex.value !== null) {
-    updated[editingIndex.value] = { ...form.value };
+    emit("edit", Number(form.value.id), {
+      title: form.value.title,
+      description: form.value.description,
+      file: selectedFile.value
+    });
   }
-
-  emit("update:activities", updated);
   showModal.value = false;
   resetForm();
 };
@@ -143,30 +142,16 @@ const handleConfirm = () => {
         </p>
       </div>
 
-      <BaseButton
-        text="+ Añadir actividad"
-        customClass="bg-[#1226AB] px-4 py-2"
-        @click="openCreate"
-      />
+      <BaseButton text="+ Añadir actividad" customClass="bg-[#1226AB] px-4 py-2" @click="openCreate" />
     </div>
 
     <!-- LISTA DE ACTIVIDADES -->
     <div class="flex flex-col divide-y divide-gray-200">
-      <div
-        v-for="(activity, index) in props.activities"
-        :key="activity.id"
-        class="flex items-center gap-4 py-3"
-      >
+      <div v-for="(activity, index) in props.activities" :key="activity.id" class="flex items-center gap-4 py-3">
         <!-- Miniatura de la imagen -->
-        <div
-          class="w-40 h-24 rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
-          @click="openPreview(activity.image)"
-        >
-          <img 
-            :src="activity.image" 
-            class="w-full h-full object-cover" 
-            :alt="activity.title"
-          />
+        <div class="w-40 h-24 rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
+          @click="openPreview(activity.image)">
+          <img :src="activity.image" class="w-full h-full object-cover" :alt="activity.title" />
         </div>
 
         <!-- Información de la actividad -->
@@ -181,16 +166,8 @@ const handleConfirm = () => {
 
         <!-- Botones de acción -->
         <div class="flex gap-2">
-          <BaseButton
-            text="Editar"
-            customClass="bg-[#1226AB] px-3 py-1.5 text-sm"
-            @click="openEdit(activity, index)"
-          />
-          <BaseButton
-            text="Eliminar"
-            customClass="bg-red-600 px-3 py-1.5 text-sm"
-            @click="askDelete(index)"
-          />
+          <BaseButton text="Editar" customClass="bg-[#1226AB] px-3 py-1.5 text-sm" @click="openEdit(activity, index)" />
+          <BaseButton text="Eliminar" customClass="bg-red-600 px-3 py-1.5 text-sm" @click="askDelete(index)" />
         </div>
       </div>
 
@@ -201,31 +178,16 @@ const handleConfirm = () => {
     </div>
 
     <!-- MODAL PARA CREAR/EDITAR ACTIVIDAD -->
-    <BaseModal
-      :show="showModal"
-      :title="mode === 'create' ? 'Nueva actividad' : 'Editar actividad'"
-      :mode="mode"
-      size="lg"
-      @close="showModal = false"
-      @confirm="handleConfirm"
-    >
+    <BaseModal :show="showModal" :title="mode === 'create' ? 'Nueva actividad' : 'Editar actividad'" :mode="mode"
+      size="lg" @close="showModal = false" @confirm="handleConfirm">
       <div class="flex flex-col gap-4">
         <!-- Imagen -->
         <div>
           <label class="font-semibold text-sm">Imagen</label>
           <div
             class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-[#1226AB] transition mt-2"
-            @dragover.prevent
-            @drop="onDrop"
-            @click="fileInput?.click()"
-          >
-            <input
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              class="hidden"
-              @change="onFileChange"
-            />
+            @dragover.prevent @drop="onDrop" @click="fileInput?.click()">
+            <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange" />
 
             <div v-if="!previewUrl" class="flex flex-col items-center gap-2">
               <p class="text-gray-600 font-medium">
@@ -237,11 +199,7 @@ const handleConfirm = () => {
             </div>
 
             <div v-else class="flex flex-col gap-4">
-              <img
-                :src="previewUrl"
-                alt="preview"
-                class="w-full h-48 object-cover rounded-lg"
-              />
+              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-lg" />
               <p class="text-sm font-semibold text-gray-700">
                 {{ selectedFile?.name }}
               </p>
@@ -252,56 +210,33 @@ const handleConfirm = () => {
         <!-- Título -->
         <div>
           <label class="font-semibold text-sm">Título</label>
-          <input
-            v-model="form.title"
-            type="text"
+          <input v-model="form.title" type="text"
             class="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1226AB] focus:border-transparent"
-            placeholder="Ej: Taller de primeros auxilios"
-          />
+            placeholder="Ej: Taller de primeros auxilios" />
         </div>
 
         <!-- Descripción -->
         <div>
           <label class="font-semibold text-sm">Descripción</label>
-          <textarea
-            v-model="form.description"
-            rows="3"
+          <textarea v-model="form.description" rows="3"
             class="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1226AB] focus:border-transparent"
-            placeholder="Describe brevemente la actividad..."
-          />
+            placeholder="Describe brevemente la actividad..." />
         </div>
       </div>
     </BaseModal>
 
     <!-- MODAL PREVIEW DE IMAGEN -->
-    <BaseModal
-      :show="isPreviewModalOpen"
-      title="Vista Previa de la Imagen"
-      mode="view"
-      size="2xl"
-      @close="isPreviewModalOpen = false"
-      @confirm="isPreviewModalOpen = false"
-    >
+    <BaseModal :show="isPreviewModalOpen" title="Vista Previa de la Imagen" mode="view" size="2xl"
+      @close="isPreviewModalOpen = false" @confirm="isPreviewModalOpen = false">
       <div class="flex flex-col items-center justify-center w-full h-full">
-        <div
-          v-if="previewImage"
-          class="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg p-2"
-        >
-          <img
-            :src="previewImage"
-            class="max-w-full max-h-[70vh] object-contain"
-            style="max-height: 70vh"
-          />
+        <div v-if="previewImage" class="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg p-2">
+          <img :src="previewImage" class="max-w-full max-h-[70vh] object-contain" style="max-height: 70vh" />
         </div>
       </div>
     </BaseModal>
 
     <!-- MODAL CONFIRM DELETE -->
-    <ConfirmDelete
-      :show="isDeleteModalOpen"
-      elementName="esta actividad"
-      @close="isDeleteModalOpen = false"
-      @confirm="removeActivity"
-    />
+    <ConfirmDelete :show="isDeleteModalOpen" elementName="esta actividad" @close="isDeleteModalOpen = false"
+      @confirm="removeActivity" />
   </div>
 </template>
