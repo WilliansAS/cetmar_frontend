@@ -81,8 +81,10 @@ const askDelete = (index: number) => {
 };
 
 const removeActivity = () => {
-  const idToDelete = props.activities[pendingDeleteIndex.value].id;
-  emit("delete", Number(idToDelete));
+  if (pendingDeleteIndex.value !== null) {
+    const idToDelete = props.activities[pendingDeleteIndex.value]?.id;
+    emit("delete", Number(idToDelete));
+  }
   isDeleteModalOpen.value = false;
 };
 
