@@ -1,137 +1,85 @@
 <template>
-  <div
-    v-if="visible"
-    class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-  >
-    <div class="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl animate-fadeIn">
-      <!-- Título -->
-      <h2 class="text-2xl font-semibold text-gray-900 mb-4">
-        {{ image ? "Cambiar imagen" : "Añadir nueva imagen" }}
-      </h2>
+  <div v-if="isOpen" class="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+      <h2 class="text-xl font-bold mb-4">Añadir nueva imagen</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la imagen</label>
+          <input 
+            v-model="imageName" 
+            type="text" 
+            placeholder="Ej: Banner Principal 1"
+            class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
 
-      <!-- Área de carga -->
-      <div
-        class="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center p-6 cursor-pointer hover:border-[#1226AB] transition"
-        @click="triggerFileInput"
-      >
-        <img :src="UploadIcon" alt="Subir archivo" class="w-12 h-12 mb-3" />
-        <p class="text-gray-600 font-medium">
-          {{ selectedFileName || "Selecciona una imagen" }}
-        </p>
-        <input
-          ref="fileInput"
-          type="file"
-          accept="image/*"
-          class="hidden"
-          @change="handleFileChange"
-        />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Archivo de imagen</label>
+          <input 
+            type="file" 
+            accept="image/*" 
+            @change="handleFileChange"
+            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+        </div>
+
+        <div v-if="previewUrl" class="mt-2">
+          <p class="text-xs text-gray-400 mb-1">Vista previa:</p>
+          <img :src="previewUrl" class="h-32 w-full object-cover rounded-md border" />
+        </div>
       </div>
 
-      <!-- Vista previa -->
-      <div v-if="previewSrc" class="mt-4 flex justify-center">
-        <img
-          :src="previewSrc"
-          alt="Vista previa"
-          class="w-48 h-36 object-cover rounded-lg border"
-        />
-      </div>
-
-      <!-- Botones -->
       <div class="flex justify-end gap-3 mt-6">
-        <BaseButton
-          text="Cancelar"
-          customClass="bg-gray-400 text-gray-800 hover:brightness-95"
-          @click="handleCancel"
-        />
-        <BaseButton
-          text="Guardar"
-          customClass="bg-[#1226AB]"
-          @click="saveChanges"
-          :disabled="!hasChanges"
-        />
+        <button @click="closeModal" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">
+          Cancelar
+        </button>
+        <button 
+          @click="handleConfirm" 
+          :disabled="!imageName || !selectedFile"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300"
+        >
+          Subir Imagen
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
-import BaseButton from "@/components/elements/BaseButton.vue";
-import UploadIcon from "@/assets/icons/Upload.svg";
+import { ref } from 'vue';
 
-const props = defineProps({
-  visible: { type: Boolean, default: false },
-  image: { type: Object as any, default: null },
-});
+const props = defineProps<{ isOpen: boolean }>();
+const emit = defineEmits(['close', 'confirm']);
 
-const emit = defineEmits(["close", "save"]);
-
-const fileInput = ref<HTMLInputElement | null>(null);
-const selectedFileName = ref("");
-const previewSrc = ref("");
+const imageName = ref('');
 const selectedFile = ref<File | null>(null);
+const previewUrl = ref<string | null>(null);
 
-// Computed para habilitar/deshabilitar el botón Guardar
-const hasChanges = computed(() => {
-  return selectedFile.value !== null || (props.image && (selectedFileName.value !== props.image.name || previewSrc.value !== props.image.src));
-});
-
-watch(
-  () => props.visible,
-  (isVisible) => {
-    if (isVisible) {
-      // Resetear cuando el modal se abre
-      if (props.image) {
-        selectedFileName.value = props.image.name || "";
-        previewSrc.value = props.image.src || "";
-      } else {
-        selectedFileName.value = "";
-        previewSrc.value = "";
-      }
-      selectedFile.value = null;
-    }
-  }
-);
-
-const triggerFileInput = () => fileInput.value?.click();
-
-const handleFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (file) {
-    selectedFileName.value = file.name;
-    selectedFile.value = file;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      previewSrc.value = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0];
+    // Solo para la vista previa visual en el modal
+    previewUrl.value = URL.createObjectURL(target.files[0]);
   }
 };
 
-const handleCancel = () => {
-  resetModal();
-  emit("close");
+const handleConfirm = () => {
+  if (imageName.value && selectedFile.value) {
+    // Emitimos el objeto File real y el nombre
+    emit('confirm', {
+      name: imageName.value,
+      file: selectedFile.value
+    });
+    closeModal();
+  }
 };
 
-const resetModal = () => {
-  selectedFileName.value = "";
-  previewSrc.value = "";
+const closeModal = () => {
+  imageName.value = '';
   selectedFile.value = null;
-  if (fileInput.value) {
-    fileInput.value.value = "";
-  }
-};
-
-const saveChanges = () => {
-  // Evitar guardar vacío
-  if (!selectedFile.value && !props.image) return;
-
-  emit("save", {
-    fileName: selectedFileName.value,
-    src: previewSrc.value,
-  });
-  resetModal();
+  previewUrl.value = null;
+  emit('close');
 };
 </script>
