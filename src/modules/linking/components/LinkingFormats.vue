@@ -1,37 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useAnnouncementStore } from "@/store/announcement.store";
 import type { IAnnouncementPayload } from "@/interfaces/IAnnouncement";
-
-// Componentes Reutilizables
 import BaseButton from "@/components/elements/BaseButton.vue";
 import BaseModal from "@/components/elements/BaseModal.vue";
-import BaseInput from "@/components/elements/BaseInput.vue"; // Tu componente dinámico
+import BaseInput from "@/components/elements/BaseInput.vue";
 
-// Iconos
-import MegaphoneIcon from "@/assets/icons/Megaphone.svg";
+import FileIcon from "@/assets/icons/Megaphone.svg"; // Podrías cambiarlo por uno de documento
 import TrashIcon from "@/assets/icons/Trash.svg";
 import EditPencilIcon from "@/assets/icons/EditPencil.svg";
 
 const announcementStore = useAnnouncementStore();
 const { announcements, loading } = storeToRefs(announcementStore);
 
-const filteredAnnouncements = computed(() =>
-  announcements.value.filter((item) => item.Type === "Comunicado"),
-);
-
 const isModalOpen = ref(false);
 const editingId = ref<number | null>(null);
-const hasNoLimitDate = ref(false); // Estado para el checkbox de fecha límite
+const selectedFile = ref<File | null>(null);
+
+// Filtramos solo los formatos
+const formats = computed(() =>
+  announcements.value.filter((item) => item.Type === "Formato"),
+);
 
 const form = ref<IAnnouncementPayload>({
   Titule: "",
   Description: "",
-  Type: "Comunicado",
+  Type: "Formato",
   UrlImage: null,
   UrlDocument: null,
-  IsAnAdvice: true, // Por defecto es comunicado
+  IsAnAdvice: false,
   CreationDate: "",
   EndDate: null,
   IsActive: true,
@@ -41,27 +39,29 @@ const modalMode = computed(() =>
   editingId.value !== null ? "edit" : "create",
 );
 
-// Si selecciona "Sin fecha límite", limpiamos el campo EndDate
-watch(hasNoLimitDate, (val) => {
-  if (val) form.value.EndDate = null;
-});
-
 onMounted(async () => {
   await announcementStore.fetchAnnouncements();
 });
 
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    selectedFile.value = target.files[0];
+  }
+};
+
 const openAddModal = () => {
   editingId.value = null;
-  hasNoLimitDate.value = true;
+  selectedFile.value = null;
   form.value = {
     Titule: "",
     Description: "",
-    Type: "Comunicado",
+    Type: "Formato",
     UrlImage: null,
     UrlDocument: null,
-    IsAnAdvice: true,
-    CreationDate: new Date().toISOString(),
-    EndDate: "",
+    IsAnAdvice: false,
+    CreationDate: new Date().toLocaleDateString("en-CA"),
+    EndDate: null,
     IsActive: true,
   };
   isModalOpen.value = true;
@@ -69,26 +69,33 @@ const openAddModal = () => {
 
 const openEditModal = (item: any) => {
   editingId.value = item.Id;
-  hasNoLimitDate.value = !item.EndDate;
-  form.value = { ...item };
+  selectedFile.value = null;
+  form.value = {
+    ...item,
+    CreationDate: item.CreationDate ? item.CreationDate.split("T")[0] : "",
+    EndDate: item.EndDate ? item.EndDate.split("T")[0] : null,
+  };
   isModalOpen.value = true;
 };
 
 const handleConfirm = async () => {
   try {
-    // Aseguramos la fecha de creación en el payload antes de enviar
+    const payload = { ...form.value };
+
+    // Formateo de fechas local para evitar desfase y error 422
     if (!editingId.value) {
-      form.value.CreationDate = new Date().toISOString();
+      payload.CreationDate = new Date().toLocaleDateString("en-CA");
     }
 
     if (editingId.value !== null) {
-      await announcementStore.updateAnnouncement(editingId.value, form.value);
+      await announcementStore.updateAnnouncement(editingId.value, payload);
     } else {
-      await announcementStore.createAnnouncement(form.value);
+      // Enviamos el payload y el archivo físico al store
+      await announcementStore.createAnnouncement(payload, selectedFile.value);
     }
     isModalOpen.value = false;
   } catch (error) {
-    console.error("Error al procesar:", error);
+    console.error("Error al procesar el formato:", error);
   }
 };
 
@@ -101,12 +108,14 @@ const handleToggleStatus = async (id: number) => {
   <div class="bg-white shadow-md rounded-2xl p-6 w-full flex flex-col">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-2">
-        <img :src="MegaphoneIcon" class="w-6 h-6" />
-        <h2 class="text-lg font-semibold text-gray-900">Comunicados</h2>
+        <img :src="FileIcon" class="w-6 h-6" />
+        <h2 class="text-lg font-semibold text-gray-900">
+          Formatos Descargables
+        </h2>
       </div>
       <BaseButton
-        text="+ Añadir comunicado"
-        customClass="bg-[#1226AB] px-4 py-2"
+        text="+ Añadir formato"
+        customClass="bg-[#00A896] px-4 py-2"
         @click="openAddModal"
       />
     </div>
@@ -115,33 +124,37 @@ const handleToggleStatus = async (id: number) => {
       Cargando...
     </div>
 
-    <div v-else-if="filteredAnnouncements.length" class="flex flex-col gap-4">
+    <div v-else-if="formats.length" class="flex flex-col gap-4">
       <div
-        v-for="item in filteredAnnouncements"
+        v-for="item in formats"
         :key="item.Id"
         class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex justify-between items-start hover:shadow-md transition relative overflow-hidden"
       >
         <div
-          class="absolute left-0 top-0 bottom-0 w-2 bg-[#4763E4]"
+          class="absolute left-0 top-0 bottom-0 w-2 bg-[#00A896]"
           :class="{ 'opacity-50': !item.IsActive }"
         />
 
         <div class="flex items-start gap-3 flex-1 min-w-0 pl-4">
-          <div class="w-2 h-2 bg-[#4763E4] rounded-full mt-2"></div>
+          <div class="w-2 h-2 bg-[#00A896] rounded-full mt-2"></div>
           <div class="min-w-0 flex-1">
             <h3 class="text-lg font-semibold text-gray-900 truncate">
               {{ item.Titule }}
             </h3>
             <p class="text-gray-600 text-sm mt-1 line-clamp-2">
-              {{ item.Description }}
+              {{ item.Description || "Sin descripción disponible" }}
             </p>
-            <p class="text-xs text-gray-500 mt-2 font-medium">
-              {{
-                item.EndDate
-                  ? `Expira el: ${new Date(item.EndDate).toLocaleDateString()}`
-                  : "Sin fecha de expiración"
-              }}
-            </p>
+            <div class="flex gap-4 mt-2">
+              <span class="text-xs text-gray-400"
+                >Subido:
+                {{ new Date(item.CreationDate).toLocaleDateString() }}</span
+              >
+              <span
+                v-if="item.UrlDocument"
+                class="text-xs text-blue-600 font-bold italic"
+                >Archivo adjunto disponible</span
+              >
+            </div>
           </div>
         </div>
 
@@ -167,9 +180,13 @@ const handleToggleStatus = async (id: number) => {
       </div>
     </div>
 
+    <div v-else class="text-center py-10 text-gray-500">
+      No hay formatos registrados.
+    </div>
+
     <BaseModal
       :show="isModalOpen"
-      title="Gestionar Comunicado"
+      title="Gestionar Formato"
       size="2xl"
       :mode="modalMode"
       @close="isModalOpen = false"
@@ -178,58 +195,42 @@ const handleToggleStatus = async (id: number) => {
       <div class="flex flex-col gap-5">
         <BaseInput
           id="title"
-          label="Título del comunicado"
+          label="Nombre del formato"
           v-model="form.Titule"
-          placeholder="Ej: Suspensión de labores"
+          placeholder="Ej: Solicitud de Beca"
         />
 
         <div class="flex flex-col w-full">
           <label class="text-sm font-semibold text-gray-700 mb-2"
-            >Descripción</label
+            >Descripción (Opcional)</label
           >
           <textarea
             v-model="form.Description"
-            class="border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#1226AB] min-h-[120px]"
-            placeholder="Escribe los detalles aquí..."
+            class="border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#00A896] min-h-[100px]"
+            placeholder="Breve detalle del documento..."
           ></textarea>
         </div>
 
         <div
-          class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300"
+          class="flex flex-col w-full p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200"
         >
-          <label class="flex items-center gap-3 cursor-pointer mb-4">
-            <input
-              type="checkbox"
-              v-model="hasNoLimitDate"
-              class="w-5 h-5 rounded border-gray-300 text-[#1226AB] focus:ring-[#1226AB]"
-            />
-            <span class="text-sm font-medium text-gray-700"
-              >Este comunicado no tiene fecha límite</span
-            >
-          </label>
-
-          <Transition name="fade">
-            <BaseInput
-              v-if="!hasNoLimitDate"
-              id="endDate"
-              type="date"
-              label="Fecha de Expiración"
-              v-model="form.EndDate"
-            />
-          </Transition>
+          <label class="text-sm font-bold text-gray-700 mb-2"
+            >Archivo del Formato (PDF, DOCX)</label
+          >
+          <input
+            type="file"
+            @change="handleFileChange"
+            accept=".pdf,.doc,.docx"
+            class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+          />
+          <p
+            v-if="modalMode === 'edit' && form.UrlDocument"
+            class="text-xs text-orange-600 mt-2"
+          >
+            * Ya existe un archivo. Sube uno nuevo solo si deseas reemplazarlo.
+          </p>
         </div>
       </div>
     </BaseModal>
   </div>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

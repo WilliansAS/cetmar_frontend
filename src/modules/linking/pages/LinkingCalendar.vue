@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LinkingCommuniques from "../components/LinkingCommuniques.vue";
 import Images from "../components/Images.vue";
+import LinkingFormats from "../components/LinkingFormats.vue";
 </script>
 
 <template>
@@ -43,6 +44,10 @@ import Images from "../components/Images.vue";
     </div>
     <div class="mt-6">
       <LinkingCommuniques />
+    </div>
+
+    <div class="mt-6">
+      <LinkingFormats />
     </div>
   </div>
 </template>

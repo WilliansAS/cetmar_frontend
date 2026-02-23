@@ -40,6 +40,30 @@
       </span>
     </div>
 
+    <!--Seccion de formatos-->
+    <section
+      class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 py-16 px-4 md:px-20"
+    >
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+          <h2
+            class="text-2xl md:text-4xl font-bold text-gray-900 font-poppins border-l-4 border-[#4880FF] pl-4 inline-block"
+          >
+            Formatos
+          </h2>
+          <p
+            class="text-gray-600 mt-4 text-sm md:text-lg font-montserrat max-w-3xl mx-auto"
+          >
+            Accede y descarga de manera rápida los formatos oficiales,
+            solicitudes y guías administrativas necesarias para tus trámites en
+            CETMAR 41.
+          </p>
+        </div>
+
+        <PublicFormats />
+      </div>
+    </section>
+
     <section
       class="bg-gradient-to-br from-gray-50 via-white to-blue-50/30 py-16 px-4 md:px-20"
     >
@@ -163,11 +187,11 @@ import { useContentStore } from "@/store/content.store";
 import Navbar from "@/components/layouts/Navbar.vue";
 import Footer from "@/components/layouts/Footer.vue";
 import Announcement from "@/modules/public/components/Announcement.vue";
+import PublicFormats from "../components/PublicFormats.vue";
 
 const store = useContentStore();
 const baseUrl = import.meta.env.VITE_API_URL;
 
-/* --- FILTRADO DE CONTENIDO DINÁMICO --- */
 const calendarContent = computed(() =>
   store.contents.filter((c) => c.Page === "Calendario"),
 );
@@ -202,7 +226,6 @@ const environmentalImg = computed(() => {
     : "/images/calendario_ambiental.webp";
 });
 
-/* --- LÓGICA DE UI --- */
 const announcementComponent = ref(null);
 const showAllState = ref(false);
 const showModal = ref(false);
@@ -224,7 +247,6 @@ const handleToggleState = (state) => {
 };
 
 onMounted(async () => {
-  // Disparar carga de contenido si no está en LocalStorage/Store
   if (store.contents.length === 0) {
     await store.fetchContents();
   }
