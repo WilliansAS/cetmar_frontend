@@ -1,6 +1,39 @@
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useCounterStore } from "@/store/counter.store";
+
+const counterStore = useCounterStore();
+
+const {
+  totalStudents,
+  regularStudents,
+  irregularStudents,
+  inactiveStudents,
+  maleStudents,
+  femaleStudents,
+  loading,
+} = storeToRefs(counterStore);
+
+// Cargar datos al montar
+onMounted(async () => {
+  await counterStore.fetchAllCounters();
+});
+</script>
+
 <template>
   <div class="w-full">
-    <div class="flex flex-nowrap gap-4 justify-center items-stretch">
+    <div
+      v-if="loading"
+      class="text-center py-4 text-blue-600 font-semibold animate-pulse"
+    >
+      Actualizando indicadores...
+    </div>
+
+    <div
+      v-else
+      class="flex flex-nowrap gap-4 justify-center items-stretch overflow-x-auto pb-4"
+    >
       <div
         class="bg-white rounded-xl shadow px-6 py-5 flex flex-col items-center min-w-[225px] max-w-[300px]"
       >
@@ -10,9 +43,11 @@
         >
         <span
           class="text-2xl font-extrabold text-gray-900 leading-tight text-center"
-          >{{ totalEstudiantes?.toLocaleString() ?? "0" }}</span
         >
+          {{ totalStudents.toLocaleString() }}
+        </span>
       </div>
+
       <div
         class="bg-white rounded-xl shadow px-6 py-5 flex flex-col items-center min-w-[225px] max-w-[300px]"
       >
@@ -22,9 +57,11 @@
         >
         <span
           class="text-2xl font-extrabold text-green-500 leading-tight text-center"
-          >11,634</span
         >
+          {{ regularStudents.toLocaleString() }}
+        </span>
       </div>
+
       <div
         class="bg-white rounded-xl shadow px-6 py-5 flex flex-col items-center min-w-[225px] max-w-[300px]"
       >
@@ -34,9 +71,11 @@
         >
         <span
           class="text-2xl font-extrabold text-orange-400 leading-tight text-center"
-          >400</span
         >
+          {{ irregularStudents.toLocaleString() }}
+        </span>
       </div>
+
       <div
         class="bg-white rounded-xl shadow px-6 py-5 flex flex-col items-center min-w-[225px] max-w-[300px]"
       >
@@ -46,9 +85,11 @@
         >
         <span
           class="text-2xl font-extrabold text-red-500 leading-tight text-center"
-          >50</span
         >
+          {{ inactiveStudents.toLocaleString() }}
+        </span>
       </div>
+
       <div
         class="bg-white rounded-xl shadow px-6 py-5 flex flex-row items-center min-w-[200px] max-w-[220px] gap-4 justify-center"
       >
@@ -59,8 +100,9 @@
           >
           <span
             class="text-2xl font-extrabold text-gray-900 leading-tight text-center"
-            >6,154</span
           >
+            {{ maleStudents.toLocaleString() }}
+          </span>
         </div>
         <div class="h-8 w-px bg-gray-300 mx-2"></div>
         <div class="flex flex-col flex-1 items-center">
@@ -70,25 +112,11 @@
           >
           <span
             class="text-2xl font-extrabold text-gray-900 leading-tight text-center"
-            >6,004</span
           >
+            {{ femaleStudents.toLocaleString() }}
+          </span>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useUsersStore } from "@/store/user.store";
-import { onMounted, computed } from "vue";
-
-const userStore = useUsersStore();
-
-// Cargar el conteo cuando el componente se monte
-onMounted(() => {
-  userStore.fetchUsersCount();
-});
-
-// Computed para leer el valor directo del store
-const totalEstudiantes = computed(() => userStore.totalUsers);
-</script>

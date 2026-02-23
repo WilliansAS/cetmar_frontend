@@ -17,12 +17,12 @@ export function updateStudent(id: number, payload: User) {
   });
 }
 
-// Importar CSV de estudiantes
+// Importar Excel de estudiantes
 export function importStudentsCSV(file: File) {
   const formData = new FormData();
   formData.append("file", file);
 
-  return apiRequest<void>("/students/import_csv", {
+  return apiRequest<void>("/students/import_xls", {
     method: "POST",
     data: formData,
     headers: {

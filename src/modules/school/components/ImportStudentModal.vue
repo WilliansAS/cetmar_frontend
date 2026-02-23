@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Papa, { type ParseResult } from "papaparse";
+import * as XLSX from "xlsx";
 import UploadIcon from "@/assets/icons/Upload.svg";
 import BaseModal from "@/components/elements/BaseModal.vue";
 import { useStudentsStore } from "@/store/student.store";
@@ -34,16 +34,43 @@ const triggerFileInput = () => {
 const handleFileProcessing = (selectedFile: File) => {
   file.value = selectedFile;
 
-  // Procesamiento visual rápido para la tabla
-  Papa.parse(selectedFile, {
-    header: true,
-    preview: 8,
-    complete: (results: ParseResult<any>) => {
-      previewHeaders.value = results.meta.fields || [];
-      previewRows.value = results.data;
-    },
-    skipEmptyLines: true,
-  });
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    const data = e.target?.result;
+    // Leer el archivo como Workbook de Excel
+    const workbook = XLSX.read(data, { type: "array" });
+
+    // Obtener la primera hoja de trabajo
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+
+    // Convertir la hoja a formato JSON para la vista previa
+    // raw: false hace que las fechas y números se lean como texto formateado
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+      header: 1,
+      defval: "",
+    });
+
+    if (jsonData.length > 0) {
+      // La primera fila son los encabezados
+      const headers = jsonData[0] as string[];
+      previewHeaders.value = headers;
+
+      // Las siguientes filas son los datos (tomamos solo las primeras 8 para preview)
+      const rows = jsonData.slice(1, 9).map((row: any) => {
+        const rowObj: any = {};
+        headers.forEach((header, index) => {
+          rowObj[header] = row[index];
+        });
+        return rowObj;
+      });
+
+      previewRows.value = rows;
+    }
+  };
+
+  reader.readAsArrayBuffer(selectedFile);
 };
 
 const onFileChange = (e: Event | DragEvent) => {
@@ -132,14 +159,14 @@ const handleClose = () => {
           <p
             class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-bold"
           >
-            Solo archivos .csv
+            Solo archivos .xlsx
           </p>
 
           <input
             ref="fileInput"
             type="file"
             class="hidden"
-            accept=".csv"
+            accept=".xlsx"
             @change="onFileChange"
           />
         </div>
